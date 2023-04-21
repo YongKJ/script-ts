@@ -1,5 +1,9 @@
 import PathUtil from "path";
 import fs from "fs";
+import {LogUtil} from "./LogUtil";
+import {Log} from "../pojo/dto/Log";
+import path from "path";
+import {rimraf} from "rimraf";
 
 export class FileUtil {
 
@@ -34,6 +38,103 @@ export class FileUtil {
 
     public static write(fileName: string, content: string): void {
         fs.writeFileSync(fileName, content);
+    }
+
+    public static list(fileName: string): Array<string> {
+        try {
+            fs.accessSync(fileName, fs.constants.R_OK);
+            return fs.readdirSync(fileName);
+        } catch (e) {
+            LogUtil.loggerLine(Log.of("FileUtil", "list", "e", e));
+            return new Array<string>();
+        }
+    }
+
+    public static isFolder(fileName: string): boolean {
+        return fs.statSync(fileName).isDirectory();
+    }
+
+    public static modDate(fileName: string): Date {
+        return fs.statSync(fileName).mtime;
+    }
+
+    public static size(fileName: string): number {
+        if (this.isFolder(fileName)) {
+            return this.sizeFolder(fileName);
+        }
+        return fs.statSync(fileName).size;
+    }
+
+    public static mkdir(fileName: string): void {
+        if (!this.exist(fileName)) {
+            fs.mkdirSync(fileName, {recursive: true})
+        }
+    }
+
+    public static copy(srcFileName: string, desFileName: string): void {
+        if (this.isFolder(srcFileName)) {
+            this.mkdir(desFileName);
+            this.copyFolder(srcFileName, desFileName);
+        } else {
+            fs.copyFileSync(srcFileName, desFileName);
+        }
+    }
+
+    private static copyFolder(srcFolderName: string, desFolderName: string): void {
+        let files = this.list(srcFolderName);
+        for (let file of files) {
+            let srcNewFileName = srcFolderName + path.sep + file;
+            let desNewFileName = desFolderName + path.sep + file;
+            if (this.isFolder(srcNewFileName)) {
+                this.mkdir(desNewFileName);
+                this.copyFolder(srcNewFileName, desNewFileName);
+            } else {
+                this.copy(srcNewFileName, desNewFileName);
+            }
+        }
+    }
+
+    public static async delete(fileName: string): Promise<void> {
+        if (!this.exist(fileName)) return;
+        return new Promise<void>(resolve => {
+            rimraf(fileName).then(() => resolve());
+        });
+    }
+
+    private static sizeFolder(fileName: string): number {
+        let folderSize = 0;
+        let files = this.list(fileName);
+        for (let file of files) {
+            let tempFileName = fileName + path.sep + file;
+            if (this.isFolder(tempFileName)) {
+                folderSize += this.sizeFolder(tempFileName);
+            } else {
+                folderSize += this.size(tempFileName);
+            }
+        }
+        return folderSize;
+    }
+
+    public static modContent(path: string, regStr: string, value: string, isAll?: string): void {
+        this.modify(path, regStr, () => value, isAll);
+    }
+
+    public static modify(path: string, regStr: string, valueFunc: (matchStr?: string) => string, isAll?: string): void {
+        let content = this.read(path);
+        let contentArray = content.includes("\r\n") ?
+            content.split("\r\n") : content.split("\n");
+        let regex = new RegExp(regStr);
+        for (let line of contentArray) {
+            if (!regex.test(line)) continue;
+            let lstMatch = line.match(regex);
+            if (lstMatch == null) continue;
+            let newLine = line.replace(lstMatch[1], valueFunc(lstMatch[1]));
+            content = content.replace(line, newLine);
+            if (typeof isAll === "undefined" || !isAll) {
+                break;
+            }
+        }
+        this.write(path, content);
     }
 
 }

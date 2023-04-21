@@ -6,6 +6,7 @@ class ScriptTs {
 
     public static run(): void {
         const appTest = new ApplicationTest();
+        // appTest.test1();
         appTest.test();
 
         // const app = new Application();
