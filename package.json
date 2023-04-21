@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@types/node": "^18.15.13",
+    "typescript": "^5.0.4",
+    "webpack-obfuscator": "^3.5.1",
+    "yaml": "^2.2.1"
+  },
+  "scripts": {
+    "watch": "tsc --watch",
+    "build": "webpack",
+    "dev": "node ./dist/script-ts.js"
+  }
+}
