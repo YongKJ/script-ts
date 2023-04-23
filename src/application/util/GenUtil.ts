@@ -25,6 +25,12 @@ export class GenUtil {
         return YAML.parse(content)[key];
     }
 
+    public static getConfig(config: string): Record<string, any> {
+        let path = this.getConfigPath(config);
+        let content = FileUtil.read(path);
+        return YAML.parse(content);
+    }
+
     public static writeConfig(config: string, recData: Record<string, any>): void {
         let path = this.getConfigPath(config);
         let content = YAML.stringify(recData);

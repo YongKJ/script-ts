@@ -47,8 +47,10 @@ export class BuildScriptService {
 
         RemoteUtil.changeWorkFolder(FileUtil.appDir());
         let buildCmd = CmdUtil.build_ts_script();
-        RemoteUtil.execLocalCmd(buildCmd)
-        FileUtil.copy(script.yamlConfig, script.scriptConfig);
+        RemoteUtil.execLocalCmd(buildCmd);
+        if (FileUtil.exist(script.yamlConfig)) {
+            FileUtil.copy(script.yamlConfig, script.scriptConfig);
+        }
 
         BuildScriptService.changeTsScript(script, "after");
         this.changeBuildConfig(script, "after");
