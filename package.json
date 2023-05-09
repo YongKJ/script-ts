@@ -3,6 +3,7 @@
     "@types/node": "^18.15.13",
     "date-fns": "^2.29.3",
     "rimraf": "^5.0.0",
+    "simple-git": "^3.18.0",
     "typescript": "^5.0.4",
     "webpack-obfuscator": "^3.5.1",
     "yaml": "^2.2.1"

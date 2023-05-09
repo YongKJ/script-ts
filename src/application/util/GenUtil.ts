@@ -1,10 +1,16 @@
 import YAML from "yaml";
 import {FileUtil} from "./FileUtil";
 import {ChildProcess} from "child_process";
+import * as DateTimeUtil from "date-fns";
 
 export class GenUtil {
 
     private constructor() {
+    }
+
+    public static dateToStr(time: Date | number, format?: string): string {
+        format = format || "yyyy-MM-dd HH:mm:ss";
+        return DateTimeUtil.format(time, format);
     }
 
     public static toHump(name: string): string {

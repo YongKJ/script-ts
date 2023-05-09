@@ -1,5 +1,6 @@
 import {Demo} from "./applet/demo/Demo";
 import {BuildScriptService} from "./deploy/service/BuildScriptService";
+import {WhalesWebBuild} from "./applet/whales-web-build/WhalesWebBuild";
 
 export class ApplicationTest {
 
@@ -11,7 +12,8 @@ export class ApplicationTest {
     }
 
     public test(): void {
-        Demo.run();
+        // Demo.run();
+        WhalesWebBuild.run();
     }
 
 }
