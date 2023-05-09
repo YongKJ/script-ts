@@ -35,5 +35,9 @@ module.exports = {
         stringArrayWrappersType: 'variable',
         stringArrayThreshold: 0.75,
         unicodeEscapeSequence: false
-    })]
+    })],
+    externals: {
+        'cpu-features': 'commonjs cpu-features',
+        'ssh2': 'commonjs ssh2'
+    }
 }
