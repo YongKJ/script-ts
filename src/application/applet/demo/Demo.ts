@@ -6,7 +6,7 @@ export class Demo {
 
     private readonly msg: string;
 
-    private constructor() {
+    public constructor() {
         let value = GenUtil.getValue("demo.yaml", "msg");
         this.msg = GenUtil.anyToStr(value);
     }
@@ -15,8 +15,26 @@ export class Demo {
         LogUtil.loggerLine(Log.of("Demo", "test", "msg", this.msg));
     }
 
+    private test1(): void {
+        this.test2(Demo);
+        this.test2(new Demo())
+    }
+
+    private test2<T>(clazz: (new () => T) | T): void {
+        LogUtil.loggerLine(Log.of("Demo", "test2", "clazz", clazz));
+        console.log("--------------------------------------------------------------------------------")
+        LogUtil.loggerLine(Log.of("Demo", "test2", "typeof clazz", (typeof clazz)));
+        console.log("--------------------------------------------------------------------------------")
+        LogUtil.loggerLine(Log.of("Demo", "test2", "+new Date()", (+new Date())));
+        console.log("--------------------------------------------------------------------------------")
+        LogUtil.loggerLine(Log.of("Demo", "test2", "new Date()", (new Date())));
+        console.log("--------------------------------------------------------------------------------")
+        LogUtil.loggerLine(Log.of("Demo", "test2", "typeof null", (typeof null)));
+        console.log("--------------------------------------------------------------------------------")
+    }
+
     public static run(): void {
-        new Demo().test();
+        new Demo().test1();
     }
 
 }

@@ -7,7 +7,7 @@ export class ApplicationTest {
     }
 
     public test1(): void {
-        BuildScriptService.run();
+        // BuildScriptService.run();
     }
 
     public test(): void {
