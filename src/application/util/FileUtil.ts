@@ -10,13 +10,13 @@ export class FileUtil {
     private constructor() {
     }
 
-    public static appDir(isPros?: boolean): string {
+    public static appDir(isProd?: boolean): string {
         let launchName = require.main?.filename;
         if (typeof launchName === "undefined") {
             launchName = __filename;
         }
         let appDir = PathUtil.dirname(launchName);
-        if (isPros) return appDir;
+        if (isProd) return appDir;
         return PathUtil.dirname(appDir);
     }
 

@@ -1,4 +1,5 @@
 import path from "path";
+import {FileUtil} from "../../../../util/FileUtil";
 
 export class WebBuild {
 
@@ -21,6 +22,9 @@ export class WebBuild {
     }
 
     public static get(projectPath: string): WebBuild {
+        if (!FileUtil.exist(projectPath)) {
+            projectPath = FileUtil.appDir();
+        }
         let parentPath = path.dirname(projectPath);
         let projectDistPath = projectPath + path.sep + "dist";
         let distProjectPath = parentPath + path.sep + "whales-web-dist";

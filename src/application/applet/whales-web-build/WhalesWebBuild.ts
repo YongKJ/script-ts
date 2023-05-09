@@ -16,12 +16,12 @@ export class WhalesWebBuild {
 
     private constructor() {
         this.names = Array.of("css", "fonts", "img", "js", "model", "index.html", "favicon.ico");
-        let value = GenUtil.getValue("whales-web-build.yaml", "project-path");
-        this.webBuild = WebBuild.get(GenUtil.anyToStr(value));
+        let path = GenUtil.getValue("whales-web-build.yaml", "project-path");
+        this.webBuild = WebBuild.get(GenUtil.anyToStr(path));
         this.git = simpleGit();
     }
 
-    private async apply(): Promise<v> {
+    private async apply(): Promise<void> {
         RemoteUtil.changeWorkFolder(this.webBuild.whalesWebProjectPath);
         let buildCmd = BuildCmd.build_whales_web();
         RemoteUtil.execLocalCmd(buildCmd);
@@ -34,6 +34,7 @@ export class WhalesWebBuild {
             LogUtil.loggerLine(Log.of("WhalesWebBuild", "checkWhalesWebDist", "msg", "git clone"));
             await this.git.clone(this.webBuild.whalesWebDistRepo, this.webBuild.whalesWebDistProjectPath);
         }
+
         LogUtil.loggerLine(Log.of("WhalesWebBuild", "checkWhalesWebDist", "msg", "git pull"));
         this.git = simpleGit(this.webBuild.whalesWebDistProjectPath);
         await this.git.pull();
@@ -44,7 +45,7 @@ export class WhalesWebBuild {
         for (let file of files) {
             let path = this.webBuild.whalesWebDistProjectPath + PathUtil.sep + file;
             if (!this.names.includes(file)) continue;
-            FileUtil.delete(path).then();
+            await FileUtil.delete(path);
         }
 
         files = FileUtil.list(this.webBuild.whalesWebProjectDistPath);
