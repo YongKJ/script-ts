@@ -8,6 +8,22 @@ export class GenUtil {
     private constructor() {
     }
 
+    public static mapToRecord(mapData: Map<string, any>): Record<string, any> {
+        let recData: Record<string, any> = {};
+        for (let [key, value] of mapData) {
+            recData[key] = value;
+        }
+        return recData;
+    }
+
+    public static mapToObj(mapData: Map<string, any>): object {
+        const objData: Record<string, any> = {};
+        for (let [key, value] of mapData.entries()) {
+            objData[key] = value;
+        }
+        return objData;
+    }
+
     public static dateToStr(time: Date | number, format?: string): string {
         format = format || "yyyy-MM-dd HH:mm:ss";
         return DateTimeUtil.format(time, format);

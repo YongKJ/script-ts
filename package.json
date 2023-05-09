@@ -1,7 +1,10 @@
 {
   "dependencies": {
     "@types/node": "^18.15.13",
+    "@types/qs": "^6.9.7",
+    "axios": "^1.4.0",
     "date-fns": "^2.29.3",
+    "qs": "^6.11.1",
     "rimraf": "^5.0.0",
     "simple-git": "^3.18.0",
     "supports-color": "^9.3.1",
