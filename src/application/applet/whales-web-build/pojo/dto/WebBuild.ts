@@ -7,26 +7,16 @@ export class WebBuild {
     private _whalesWebProjectPath: string;
     private _whalesWebProjectDistPath: string;
     private _whalesWebDistProjectPath: string;
-    private _whalesWebDistRepo: string;
-    private _serverHost: string;
-    private _serverPort: number;
-    private _serverUserName: string;
-    private _serverPassword: string;
 
-    public constructor(whalesWebParentPath?: string, whalesWebProjectPath?: string, whalesWebProjectDistPath?: string, whalesWebDistProjectPath?: string, whalesWebDistRepo?: string, serverHost?: string, serverPort?: number, serverUserName?: string, serverPassword?: string) {
+    public constructor(whalesWebParentPath?: string, whalesWebProjectPath?: string, whalesWebProjectDistPath?: string, whalesWebDistProjectPath?: string) {
         this._whalesWebParentPath = whalesWebParentPath || "";
         this._whalesWebProjectPath = whalesWebProjectPath || "";
         this._whalesWebProjectDistPath = whalesWebProjectDistPath || "";
         this._whalesWebDistProjectPath = whalesWebDistProjectPath || "";
-        this._whalesWebDistRepo = whalesWebDistRepo || "";
-        this._serverHost = serverHost || "";
-        this._serverPort = serverPort || 0;
-        this._serverUserName = serverUserName || "";
-        this._serverPassword = serverPassword || "";
     }
 
-    public static of(whalesWebParentPath: string, whalesWebProjectPath: string, whalesWebProjectDistPath: string, whalesWebDistProjectPath: string, whalesWebDistRepo: string, serverHost: string, serverPort: number, serverUserName: string, serverPassword: string): WebBuild {
-        return new WebBuild(whalesWebParentPath, whalesWebProjectPath, whalesWebProjectDistPath, whalesWebDistProjectPath, whalesWebDistRepo, serverHost, serverPort, serverUserName, serverPassword);
+    public static of(whalesWebParentPath: string, whalesWebProjectPath: string, whalesWebProjectDistPath: string, whalesWebDistProjectPath: string): WebBuild {
+        return new WebBuild(whalesWebParentPath, whalesWebProjectPath, whalesWebProjectDistPath, whalesWebDistProjectPath);
     }
 
     public static get(projectPath: string): WebBuild {
@@ -38,8 +28,6 @@ export class WebBuild {
         let distProjectPath = parentPath + path.sep + "whales-web-dist";
         return WebBuild.of(
             parentPath, projectPath, projectDistPath, distProjectPath,
-            "http://124.222.85.139:3000/DengXJ/whales-web-dist.git",
-            "", 0, "", ""
         );
     }
 
@@ -73,45 +61,5 @@ export class WebBuild {
 
     set whalesWebDistProjectPath(value: string) {
         this._whalesWebDistProjectPath = value;
-    }
-
-    get whalesWebDistRepo(): string {
-        return this._whalesWebDistRepo;
-    }
-
-    set whalesWebDistRepo(value: string) {
-        this._whalesWebDistRepo = value;
-    }
-
-    get serverHost(): string {
-        return this._serverHost;
-    }
-
-    set serverHost(value: string) {
-        this._serverHost = value;
-    }
-
-    get serverPort(): number {
-        return this._serverPort;
-    }
-
-    set serverPort(value: number) {
-        this._serverPort = value;
-    }
-
-    get serverUserName(): string {
-        return this._serverUserName;
-    }
-
-    set serverUserName(value: string) {
-        this._serverUserName = value;
-    }
-
-    get serverPassword(): string {
-        return this._serverPassword;
-    }
-
-    set serverPassword(value: string) {
-        this._serverPassword = value;
     }
 }

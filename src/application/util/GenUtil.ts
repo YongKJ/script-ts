@@ -24,6 +24,15 @@ export class GenUtil {
         return objData;
     }
 
+    public static strToDate(timeStr: string, format?: string, isISO?: boolean): Date | null {
+        format = format || "yyyy-MM-dd HH:mm:ss";
+        let date = DateTimeUtil.parseISO(timeStr);
+        if (DateTimeUtil.isValid(date)) {
+            return isISO ? date : DateTimeUtil.parse(timeStr, format, new Date());
+        }
+        return null;
+    }
+
     public static dateToStr(time: Date | number, format?: string): string {
         format = format || "yyyy-MM-dd HH:mm:ss";
         return DateTimeUtil.format(time, format);

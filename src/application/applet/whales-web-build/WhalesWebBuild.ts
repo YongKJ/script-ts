@@ -8,24 +8,33 @@ import {WebBuild} from "./pojo/dto/WebBuild";
 import {BuildCmd} from "./pojo/dto/BuildCmd";
 import PathUtil from "path";
 import * as ssh2 from "ssh2";
+import {Repository} from "gitea-js";
+import fetch from "cross-fetch"
+import {Global} from "./config/Global";
+import * as DateTimeUtil from "date-fns";
+import {GiteaController} from "./controller/GiteaController";
 
 export class WhalesWebBuild {
 
     private git: SimpleGit;
+    private repo!: Repository;
     private readonly beginTime: number;
     private readonly webBuild: WebBuild;
     private readonly names: Array<string>;
+    private giteaController: GiteaController;
 
     private constructor() {
         this.names = Array.of("css", "fonts", "img", "js", "model", "index.html", "favicon.ico");
         let path = GenUtil.getValue("whales-web-build.yaml", "project-path");
         this.webBuild = WebBuild.get(GenUtil.anyToStr(path));
+        this.giteaController = new GiteaController();
         this.beginTime = +new Date();
         this.git = simpleGit();
     }
 
     private async apply(): Promise<void> {
         RemoteUtil.changeWorkFolder(this.webBuild.whalesWebProjectPath);
+        this.repo = await this.giteaController.getRepo();
         let buildCmd = BuildCmd.build_whales_web();
         RemoteUtil.execLocalCmd(buildCmd);
         await this.checkWhalesWebDist();
@@ -36,7 +45,7 @@ export class WhalesWebBuild {
     private async checkWhalesWebDist(): Promise<void> {
         if (!FileUtil.exist(this.webBuild.whalesWebDistProjectPath)) {
             LogUtil.loggerLine(Log.of("WhalesWebBuild", "checkWhalesWebDist", "msg", "clone"));
-            await this.git.clone(this.webBuild.whalesWebDistRepo, this.webBuild.whalesWebDistProjectPath);
+            await this.git.clone(<string>this.repo.clone_url, this.webBuild.whalesWebDistProjectPath);
         }
         this.git = simpleGit(this.webBuild.whalesWebDistProjectPath);
 
@@ -93,13 +102,27 @@ export class WhalesWebBuild {
         await this.git.push(["-f", "origin", "master"]);
     }
 
-    private countTime(): void {
+    private async updateGiteaRepo(): Promise<void> {
+        let createDate = <Date>GenUtil.strToDate(<string>this.repo.created_at, undefined, true);
+        if (DateTimeUtil.isAfter(DateTimeUtil.addDays(createDate, 1), Date.now())) return;
+        LogUtil.loggerLine(Log.of("WhalesWebBuild", "updateGiteaRepo", "createDate", GenUtil.dateToStr(createDate)));
+        LogUtil.loggerLine(Log.of("WhalesWebBuild", "updateGiteaRepo", "nowDate", GenUtil.dateToStr(Date.now())));
+
+        LogUtil.loggerLine(Log.of("WhalesWebBuild", "updateGiteaRepo", "msg", "repo delete"));
+        await this.giteaController.deleteRepo();
+
+        LogUtil.loggerLine(Log.of("WhalesWebBuild", "updateGiteaRepo", "msg", "repo create"));
+        await this.giteaController.createRepo();
+    }
+
+    private async countTime(): Promise<void> {
+        await this.updateGiteaRepo();
         let endTime = +new Date();
         let totalSeconds = (endTime - this.beginTime) / 1000;
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = Math.floor(totalSeconds - minutes * 60);
-        console.log("--------------------------------------------------------------------------------------------------------------");
         LogUtil.loggerLine(Log.of("WhalesWebBuild", "apply", "time", minutes + " min " + seconds + " sec"));
+        LogUtil.loggerLine(Log.of("WhalesWebBuild", "remoteServerPull", "msg", "done"));
     }
 
     private async remoteServerPull(): Promise<void> {
@@ -109,9 +132,9 @@ export class WhalesWebBuild {
                 if (err) throw err;
                 LogUtil.loggerLine(Log.of("WhalesWebBuild", "remoteServerPull", "msg", "server pull"));
                 console.log("--------------------------------------------------------------------------------------------------------------");
-                stream.on('close', () => {
-                    this.countTime();
-                    LogUtil.loggerLine(Log.of("WhalesWebBuild", "remoteServerPull", "msg", "done"));
+                stream.on('close', async () => {
+                    console.log("--------------------------------------------------------------------------------------------------------------");
+                    await this.countTime();
                     client.end();
                 }).on('data', (data: Buffer) => {
                     console.log(data.toString("utf-8"));
@@ -123,16 +146,16 @@ export class WhalesWebBuild {
                 stream.end(
                     "cd /mydata\n" +
                     "rm -rf whaleshub\n" +
-                    "git clone " + this.webBuild.whalesWebDistRepo + "\n" +
+                    "git clone " + this.repo.clone_url + "\n" +
                     "mv whales-web-dist whaleshub\n" +
                     "exit\n"
                 );
             });
         }).connect({
-            host: this.webBuild.serverHost,
-            port: this.webBuild.serverPort,
-            username: this.webBuild.serverUserName,
-            password: this.webBuild.serverPassword
+            host: Global.SERVER_HOST,
+            port: Global.SERVER_PORT,
+            username: Global.SERVER_USERNAME,
+            password: Global.SERVER_PASSWORD
         });
     }
 
