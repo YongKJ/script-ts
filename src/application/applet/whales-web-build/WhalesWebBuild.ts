@@ -122,7 +122,6 @@ export class WhalesWebBuild {
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = Math.floor(totalSeconds - minutes * 60);
         LogUtil.loggerLine(Log.of("WhalesWebBuild", "apply", "time", minutes + " min " + seconds + " sec"));
-        LogUtil.loggerLine(Log.of("WhalesWebBuild", "remoteServerPull", "msg", "done"));
     }
 
     private async remoteServerPull(): Promise<void> {
@@ -134,6 +133,7 @@ export class WhalesWebBuild {
                 console.log("--------------------------------------------------------------------------------------------------------------");
                 stream.on('close', async () => {
                     console.log("--------------------------------------------------------------------------------------------------------------");
+                    LogUtil.loggerLine(Log.of("WhalesWebBuild", "remoteServerPull", "msg", "done"));
                     await this.countTime();
                     client.end();
                 }).on('data', (data: Buffer) => {
