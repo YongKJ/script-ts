@@ -35,11 +35,22 @@ export class WhalesWebBuild {
     private async apply(): Promise<void> {
         RemoteUtil.changeWorkFolder(this.webBuild.whalesWebProjectPath);
         this.repo = await this.giteaController.getRepo();
+        this.changeWhalesWebGlobal("before");
         let buildCmd = BuildCmd.build_whales_web();
         RemoteUtil.execLocalCmd(buildCmd);
+        this.changeWhalesWebGlobal("after");
         await this.checkWhalesWebDist();
         await this.updateWhalesWebDist();
         await this.remoteServerPull();
+    }
+
+    private changeWhalesWebGlobal(type: "before" | "after"): void {
+        FileUtil.modContent(
+            this.webBuild.whalesWebGlobalFilePath,
+            this.webBuild.globalLogEnablePattern,
+            type === "before" ? this.webBuild.globalLogEnableLatest :
+                this.webBuild.globalLogEnableOriginal
+        )
     }
 
     private async checkWhalesWebDist(): Promise<void> {
