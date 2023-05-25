@@ -95,6 +95,10 @@ export class GenUtil {
         return tempStr.substring(0, tempStr.length - (separator == null ? 1 : separator.length));
     }
 
+    public static readCommand(): string {
+        return process.argv.length > 2 ? process.argv[2] : "";
+    }
+
     public static readParams(child?: ChildProcess): Promise<Array<string>> {
         process.stdin.setEncoding('utf-8');
         return new Promise<Array<string>>(resolve => {

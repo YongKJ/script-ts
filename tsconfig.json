@@ -5,8 +5,9 @@
     "lib": [
       "DOM",
       "esnext",
+      "scripthost",
       "dom.iterable",
-      "scripthost"
+      "es2015.iterable",
     ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

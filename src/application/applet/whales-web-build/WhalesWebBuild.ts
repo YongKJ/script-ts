@@ -16,6 +16,7 @@ import {GiteaController} from "./controller/GiteaController";
 
 export class WhalesWebBuild {
 
+    private type: string;
     private git: SimpleGit;
     private repo!: Repository;
     private readonly beginTime: number;
@@ -28,6 +29,7 @@ export class WhalesWebBuild {
         let path = GenUtil.getValue("whales-web-build.yaml", "project-path");
         this.webBuild = WebBuild.get(GenUtil.anyToStr(path));
         this.giteaController = new GiteaController();
+        this.type = GenUtil.readCommand();
         this.beginTime = +new Date();
         this.git = simpleGit();
     }
@@ -36,12 +38,24 @@ export class WhalesWebBuild {
         RemoteUtil.changeWorkFolder(this.webBuild.whalesWebProjectPath);
         this.repo = await this.giteaController.getRepo();
         this.changeWhalesWebGlobal("before");
+        this.changeWhalesWebRouter("before");
         let buildCmd = BuildCmd.build_whales_web();
         RemoteUtil.execLocalCmd(buildCmd);
         this.changeWhalesWebGlobal("after");
+        this.changeWhalesWebRouter("after");
         await this.checkWhalesWebDist();
         await this.updateWhalesWebDist();
         await this.remoteServerPull();
+    }
+
+    private changeWhalesWebRouter(type: "before" | "after"): void {
+        if (this.type !== "admin") return;
+        FileUtil.modContent(
+            this.webBuild.whalesWebRouterIndexPath,
+            this.webBuild.routerIndexPathPattern,
+            type === "before" ? this.webBuild.routerIndexPathLatest :
+                this.webBuild.routerIndexPathOriginal
+        );
     }
 
     private changeWhalesWebGlobal(type: "before" | "after"): void {
@@ -137,6 +151,7 @@ export class WhalesWebBuild {
 
     private async remoteServerPull(): Promise<void> {
         let client = new ssh2.Client();
+        let folder = this.type === "admin" ? "whalesadmin" : "whaleshub";
         await client.on("ready", () => {
             client.shell((err, stream) => {
                 if (err) throw err;
@@ -156,9 +171,9 @@ export class WhalesWebBuild {
                 });
                 stream.end(
                     "cd /mydata\n" +
-                    "rm -rf whaleshub\n" +
+                    "rm -rf " + folder + "\n" +
                     "git clone " + this.repo.clone_url + "\n" +
-                    "mv whales-web-dist whaleshub\n" +
+                    "mv whales-web-dist " + folder + "\n" +
                     "exit\n"
                 );
             });
