@@ -2,10 +2,45 @@ import YAML from "yaml";
 import {FileUtil} from "./FileUtil";
 import {ChildProcess} from "child_process";
 import * as DateTimeUtil from "date-fns";
+import {OrbitEncoder} from "orbit-encoder/lib/OrbitEncoder"
+import crypto from "crypto";
+import {DataUtil} from "./DataUtil";
 
 export class GenUtil {
 
     private constructor() {
+    }
+
+    public static objToRecord<T>(obj: T): Record<string, any> {
+        let recData: Record<string, any> = {};
+        let methodNames = DataUtil.getPrototypes(obj);
+        for (let methodName of methodNames) {
+            recData[methodName] = obj[<keyof T>methodName];
+        }
+        return recData;
+    }
+
+    public static sleep(waitTimeInMs: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, waitTimeInMs));
+    }
+
+    public static timer(func: () => void, time: number): void {
+        setTimeout(func, time);
+    }
+
+    public static getMd5Str(str: string): string {
+        return crypto.createHash("md5").update(String(str)).digest("hex").toUpperCase();
+    }
+
+    private static getEnCodeStr(str: string): string {
+        return OrbitEncoder.encodeWithURIsafe(Buffer.from(str).toString("base64"));
+    }
+
+    public static getEnCode(lstStr: Array<string> | string): Array<string> | string {
+        if (typeof lstStr === "string") return this.getEnCodeStr(lstStr);
+        let strs = new Array<string>();
+        lstStr.forEach(str => strs.push(this.getEnCodeStr(str)))
+        return strs;
     }
 
     public static mapToRecord(mapData: Map<string, any>): Record<string, any> {

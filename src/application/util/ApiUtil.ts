@@ -1,8 +1,9 @@
-import axios, {AxiosBasicCredentials, AxiosInstance} from "axios";
+import axios, {AxiosBasicCredentials, AxiosInstance, AxiosRequestConfig} from "axios";
 import {LogUtil} from "./LogUtil";
 import {Log} from "../pojo/dto/Log";
 import {GenUtil} from "./GenUtil";
 import {DataUtil} from "./DataUtil";
+import FormData from "form-data";
 import qs from 'qs';
 
 export class ApiUtil {
@@ -39,14 +40,33 @@ export class ApiUtil {
         });
     }
 
-    private static getMapConfig(recHeader: Record<string, any>, recAuth?: Record<string, any>): Record<string, any> {
+    public static requestWithFormDataByPostToEntity<T>(api: string, formData: FormData, clazz: new () => T): Promise<T | Error> {
+        let config = <AxiosRequestConfig>GenUtil.mapToRecord(this.getFormConfig());
+        return new Promise(resolve => {
+            this.restTemplate.post(api, formData, config)
+                .then(res => {
+                    resolve(<T>DataUtil.convertData(res.data, clazz));
+                })
+                .catch(err => {
+                    resolve(err);
+                });
+        });
+    }
+
+    private static getFormConfig(): Map<string, any> {
+        let header: Record<string, any> = {};
+        header['Content-Type'] = 'application/x-www-form-urlencoded';
+        return this.getMapConfig(header);
+    }
+
+    private static getMapConfig(recHeader: Record<string, any>, recAuth?: Record<string, any>): Map<string, any> {
         let mapConfig = new Map<string, any>([
             ["headers", recHeader]
         ]);
         if (typeof recAuth !== "undefined") {
             mapConfig.set("auth", recAuth);
         }
-        return GenUtil.mapToRecord(mapConfig);
+        return mapConfig;
     }
 
     private static getUrl(api: string, params: Map<string, any>): string {
