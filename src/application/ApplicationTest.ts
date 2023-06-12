@@ -13,9 +13,9 @@ export class ApplicationTest {
     }
 
     public test(): void {
-        HexoBlogBuild.run();
+    // HexoBlogBuild.run();
         // WhalesWebBuild.run();
-        // Demo.run();
+        Demo.run();
     }
 
 }

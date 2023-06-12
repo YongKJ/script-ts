@@ -115,11 +115,21 @@ export class FileUtil {
         return folderSize;
     }
 
-    public static modContent(path: string, regStr: string, value: string, isAll?: string): void {
+    public static modFile(path: string, regStr: string, value: string, isAll?: boolean): void {
+        this.modifyFile(path, regStr, () => value, isAll);
+    }
+
+    public static modifyFile(path: string, regStr: string, valueFunc: (matchStr?: string) => string, isAll?: boolean): void {
+        let regex = isAll ? new RegExp(regStr, "g") : new RegExp(regStr);
+        let content = this.read(path).replace(regex, (allStr,  matchStr) => valueFunc(matchStr));
+        this.write(path, content);
+    }
+
+    public static modContent(path: string, regStr: string, value: string, isAll?: boolean): void {
         this.modify(path, regStr, () => value, isAll);
     }
 
-    public static modify(path: string, regStr: string, valueFunc: (matchStr?: string) => string, isAll?: string): void {
+    public static modify(path: string, regStr: string, valueFunc: (matchStr?: string) => string, isAll?: boolean): void {
         let content = this.read(path);
         let contentArray = content.includes("\r\n") ?
             content.split("\r\n") : content.split("\n");
