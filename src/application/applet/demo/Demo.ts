@@ -60,16 +60,30 @@ export class Demo {
     }
 
     private test4(): void {
-
         let regStr = "(\r\n\\s+<dependency>[\\s\\S]*?</dependency>)";
         let path = "C:\\Users\\admin\\Desktop\\script-java\\pom.xml";
         let value = "\r\n        <dependency>\r\n            <groupId>org.apache.httpcomponents</groupId>\r\n            <artifactId>httpclient</artifactId>\r\n            <version>4.5.49</version>\r\n        </dependency>";
         FileUtil.modFile(path, regStr, value);
     }
 
+    private test5(): void {
+        let regStr = "(plugins: [[\\s\\S]*])";
+        let path = "D:\\Document\\MyCodes\\Github\\script-ts\\webpack.config.js";
+        // FileUtil.modFile(path, regStr, "plugins: []");
+
+        let regex = new RegExp(regStr);
+        let content = FileUtil.read(path);
+        let match = content.match(regex);
+
+        LogUtil.loggerLine(Log.of("Demo", "test3", "test", (regex.test(content))));
+        LogUtil.loggerLine(Log.of("Demo", "test3", "match[0]", match == null ? "" : match[0]));
+        LogUtil.loggerLine(Log.of("Demo", "test3", "match[1]", match == null ? "" : match[1]));
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test4();
+        demo.test5();
+        // demo.test4();
         // demo.test3();
         // demo.test1();
     }

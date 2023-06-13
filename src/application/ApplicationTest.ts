@@ -8,12 +8,9 @@ export class ApplicationTest {
     public constructor() {
     }
 
-    public test1(): void {
-        // BuildScriptService.run();
-    }
-
     public test(): void {
-    // HexoBlogBuild.run();
+        // BuildScriptService.run();
+        // HexoBlogBuild.run();
         // WhalesWebBuild.run();
         Demo.run();
     }
