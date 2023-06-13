@@ -10,10 +10,12 @@ import PathUtil from "path";
 
 export class BuildScriptService {
 
+    private configType: number;
     private readonly scripts: Array<Script>;
     private readonly webpackConfig: WebpackConfig;
 
     private constructor() {
+        this.configType = 1;
         this.scripts = Script.get();
         this.webpackConfig = WebpackConfig.get();
     }
@@ -31,6 +33,15 @@ export class BuildScriptService {
         GenUtil.print("Please enter one or more numbers corresponding to the script: ");
         let nums = await GenUtil.readParams();
         if (nums.length === 0) return;
+        GenUtil.println();
+
+        GenUtil.println("1. package pure");
+        GenUtil.println("2. package mix");
+        GenUtil.print("Please enter the number corresponding to the config: ");
+        let types = await GenUtil.readParams();
+        if (types.length > 0) {
+            this.configType = GenUtil.strToNumber(types[0]);
+        }
         GenUtil.println();
 
         for (let num of nums) {
@@ -93,6 +104,11 @@ export class BuildScriptService {
             this.webpackConfig.path, this.webpackConfig.outputFilenamePattern,
             type === "before" ? script.scriptName : this.webpackConfig.outputFilenameOriginal
         );
+        if (this.configType == 2) return;
+        FileUtil.modFile(
+            this.webpackConfig.path, this.webpackConfig.outputPluginsPattern,
+            type === "before" ? this.webpackConfig.outputPluginsLatest : this.webpackConfig.outputPluginsOriginal
+        )
     }
 
     public static run(): void {
@@ -100,5 +116,3 @@ export class BuildScriptService {
     }
 
 }
-
-BuildScriptService.run();

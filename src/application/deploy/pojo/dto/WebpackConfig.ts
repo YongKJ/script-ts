@@ -13,8 +13,11 @@ export class WebpackConfig {
     private _outputPathPattern: string;
     private _outputFilenameOriginal: string;
     private _outputFilenamePattern: string;
+    private _outputPluginsPattern: string;
+    private _outputPluginsOriginal: string;
+    private _outputPluginsLatest: string;
 
-    public constructor(path?: string, modeOriginal?: string, modeLatest?: string, modePattern?: string, entryOriginal?: string, entryPattern?: string, outputPathOriginal?: string, outputPathLatest?: string, outputPathPattern?: string, outputFilenameOriginal?: string, outputFilenamePattern?: string) {
+    public constructor(path?: string, modeOriginal?: string, modeLatest?: string, modePattern?: string, entryOriginal?: string, entryPattern?: string, outputPathOriginal?: string, outputPathLatest?: string, outputPathPattern?: string, outputFilenameOriginal?: string, outputFilenamePattern?: string, outputPluginsPattern?: string, outputPluginsOriginal?: string, outputPluginsLatest?: string) {
         this._path = path || "";
         this._modeOriginal = modeOriginal || "";
         this._modeLatest = modeLatest || "";
@@ -26,20 +29,35 @@ export class WebpackConfig {
         this._outputPathPattern = outputPathPattern || "";
         this._outputFilenameOriginal = outputFilenameOriginal || "";
         this._outputFilenamePattern = outputFilenamePattern || "";
+        this._outputPluginsPattern = outputPluginsPattern || "";
+        this._outputPluginsOriginal = outputPluginsOriginal || "";
+        this._outputPluginsLatest = outputPluginsLatest || "";
     }
 
-    public static of(path: string, modeOriginal: string, modeLatest: string, modePattern: string, entryOriginal: string, entryPattern: string, outputPathOriginal: string, outputPathLatest: string, outputPathPattern: string, outputFilenameOriginal: string, outputFilenamePattern: string): WebpackConfig {
-        return new WebpackConfig(path, modeOriginal, modeLatest, modePattern, entryOriginal, entryPattern, outputPathOriginal, outputPathLatest, outputPathPattern, outputFilenameOriginal, outputFilenamePattern);
+    public static of(path: string, modeOriginal: string, modeLatest: string, modePattern: string, entryOriginal: string, entryPattern: string, outputPathOriginal: string, outputPathLatest: string, outputPathPattern: string, outputFilenameOriginal: string, outputFilenamePattern: string, outputPluginsPattern: string, outputPluginsOriginal: string, outputPluginsLatest: string): WebpackConfig {
+        return new WebpackConfig(path, modeOriginal, modeLatest, modePattern, entryOriginal, entryPattern, outputPathOriginal, outputPathLatest, outputPathPattern, outputFilenameOriginal, outputFilenamePattern, outputPluginsPattern, outputPluginsOriginal, outputPluginsLatest);
     }
 
     public static get(): WebpackConfig {
-        return WebpackConfig.of(
+        let config = WebpackConfig.of(
             FileUtil.getAbsPath(false, "webpack.config.js"),
             "production", "development", "\\s+mode: \"(.*)\",",
             "./dist/script-ts.js", "\\s+entry: \"(.*)\",",
             "./out", "./script", "\\s+path: path\\.resolve\\(__dirname, \"(.*)\"\\),",
-            "script-ts.js", "\\s+filename: \"(.*)\""
+            "script-ts.js", "\\s+filename: \"(.*)\"",
+            "(plugins: [[\\s\\S]*])", "", "plugins: []"
         );
+        return this.setOutputPluginsOriginal(config);
+    }
+
+    private static setOutputPluginsOriginal(config: WebpackConfig): WebpackConfig {
+        let regex = new RegExp(config.outputPluginsPattern);
+        let content = FileUtil.read(config.path);
+        if (!regex.test(content)) return config;
+        let lstMatch = content.match(regex);
+        if (lstMatch == null) return config;
+        config.outputPluginsOriginal = lstMatch[1];
+        return  config;
     }
 
     get outputPathLatest(): string {
@@ -128,5 +146,29 @@ export class WebpackConfig {
 
     set outputFilenamePattern(value: string) {
         this._outputFilenamePattern = value;
+    }
+
+    get outputPluginsPattern(): string {
+        return this._outputPluginsPattern;
+    }
+
+    set outputPluginsPattern(value: string) {
+        this._outputPluginsPattern = value;
+    }
+
+    get outputPluginsOriginal(): string {
+        return this._outputPluginsOriginal;
+    }
+
+    set outputPluginsOriginal(value: string) {
+        this._outputPluginsOriginal = value;
+    }
+
+    get outputPluginsLatest(): string {
+        return this._outputPluginsLatest;
+    }
+
+    set outputPluginsLatest(value: string) {
+        this._outputPluginsLatest = value;
     }
 }

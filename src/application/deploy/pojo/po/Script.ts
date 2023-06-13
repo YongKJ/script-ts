@@ -42,7 +42,12 @@ export class Script {
     }
 
     public static get(): Array<Script> {
-        let appletDir = FileUtil.getAbsPath(false, "src", "application", "applet");
+        let path = FileUtil.getAbsPath(false, "src", "application", "deploy", "service");
+        return this.getByPath().concat(this.getByPath(path));
+    }
+
+    private static getByPath(dir?: string): Array<Script> {
+        let appletDir = dir ? dir : FileUtil.getAbsPath(false, "src", "application", "applet");
         let assetsDir = FileUtil.getAbsPath(false, "src", "assets");
         let scriptDir = FileUtil.getAbsPath(false, "script");
         let distDir = FileUtil.getAbsPath(false, "dist");
