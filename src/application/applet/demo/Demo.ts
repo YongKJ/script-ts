@@ -80,9 +80,20 @@ export class Demo {
         LogUtil.loggerLine(Log.of("Demo", "test3", "match[1]", match == null ? "" : match[1]));
     }
 
+    private test6(): void {
+        let result = Demo.count(1, 10);
+        LogUtil.loggerLine(Log.of("Demo", "test6", "result", result));
+    }
+
+    private static count(a: number, b: number): number {
+        if (a === b) return a;
+        return Demo.count(a, b - 1) + Demo.count(a + 1, b);
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test5();
+        demo.test6();
+        // demo.test5();
         // demo.test4();
         // demo.test3();
         // demo.test1();
