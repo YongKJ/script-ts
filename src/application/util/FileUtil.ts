@@ -32,6 +32,11 @@ export class FileUtil {
         return fs.existsSync(fileName);
     }
 
+    public static readFile(fileName: string): string {
+        let fileContent = fs.readFileSync(fileName, 'binary');
+        return Buffer.from(fileContent, 'binary').toString("base64");
+    }
+
     public static read(fileName: string): string {
         return fs.readFileSync(fileName, "utf-8");
     }
