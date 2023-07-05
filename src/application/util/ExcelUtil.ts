@@ -421,7 +421,7 @@ export class ExcelUtil {
     }
 
     //数据写入到表中
-    public static initSheet(name?: string): void {
+    public static packSheet(name?: string): void {
         if (this.workbook == null) {
             this.workbook = new Workbook();
         }

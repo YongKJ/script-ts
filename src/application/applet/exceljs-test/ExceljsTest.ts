@@ -39,7 +39,7 @@ export class ExceljsTest {
             }
             // ExcelUtil.writePicture(2, 3, 2, 2,
             //     "C:\\Users\\admin\\Pictures\\Saved Pictures\\核心硬件评测.png");
-            ExcelUtil.initSheet();
+            ExcelUtil.packSheet();
         }
 
         await ExcelUtil.write("C:\\Users\\admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
