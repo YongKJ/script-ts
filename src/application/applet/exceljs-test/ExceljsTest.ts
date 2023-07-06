@@ -2,6 +2,7 @@ import {GenUtil} from "../../util/GenUtil";
 import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
 import {ExcelUtil} from "../../util/ExcelUtil";
+import {FileUtil} from "../../util/FileUtil";
 
 export class ExceljsTest {
 
@@ -47,9 +48,16 @@ export class ExceljsTest {
 
     private async read(): Promise<void> {
         let lstData = await ExcelUtil.toMap(this.excelPath, 0);
+        let recData = GenUtil.arrayToRecList(lstData);
         let keys = lstData[0].keys();
-        LogUtil.loggerLine(Log.of("ExceljsTest", "read", "lstData", lstData));
+        // LogUtil.loggerLine(Log.of("ExceljsTest", "read", "lstData", lstData));
+        LogUtil.loggerLine(Log.of("ExceljsTest", "read", "recData", recData));
         LogUtil.loggerLine(Log.of("ExceljsTest", "read", "keys", keys));
+        LogUtil.loggerLine(Log.of("ExceljsTest", "read", "lstData[0] instanceof Map", (lstData[0] instanceof Map)));
+        FileUtil.write(
+            "C:\\Users\\admin\\Desktop\\excel-to-json-test.json",
+            GenUtil.recToStr(recData, true)
+        );
 
         // const workbook = new Workbook();
         // let book = await workbook.xlsx.readFile(this.excelPath);
@@ -107,8 +115,8 @@ export class ExceljsTest {
 
     public static run(): void {
         // new ExceljsTest().test();
-        // new ExceljsTest().read().then();
-        new ExceljsTest().write().then();
+        new ExceljsTest().read().then();
+        // new ExceljsTest().write().then();
     }
 
 }

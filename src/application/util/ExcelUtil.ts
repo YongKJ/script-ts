@@ -71,7 +71,7 @@ export class ExcelUtil {
             this.getSheetHeader(sheet, mapHeader, headerRow, col);
         }
         //根据列头与列号关系解析表格数据
-        let lstData = new Array<Map<string, string>>;
+        let lstData = new Array<Map<string, string>>();
         for (let row of dataRow) {
             let map = this.getSheetBody(sheet, mapHeader, row);
             if (map.size == 0) continue;
@@ -85,13 +85,13 @@ export class ExcelUtil {
     //列头与列号对应关系
     private static getSheetHeader(sheet: Array<Array<any>>, mapHeader: Map<string, number>, row: number, col: number) {
         //格式化字符串数据
-        let value: string = (sheet[row][col] + "").trim();
+        let value = (sheet[row][col] + "").trim();
         mapHeader.set(value, col);
     }
 
     //获取与列头对应的列数据
     private static getSheetBody(sheet: Array<Array<any>>, mapHeader: Map<string, number>, row: number): Map<string, string> {
-        let map = new Map<string, string>;
+        let map = new Map<string, string>();
         if (row > sheet.length) {
             return map;
         }
@@ -110,8 +110,8 @@ export class ExcelUtil {
     }
 
     private static getMerges(sheet: Worksheet): Array<Record<string, any>> {
+        let merges = (<Record<string, any>>sheet)["_merges"];
         let ranges = new Array<Record<string, any>>();
-        let merges = sheet["_merges"];
         for (let key in merges) {
             if (!merges.hasOwnProperty(key)) continue;
             let model = <Record<string, any>>merges[key];
@@ -438,7 +438,7 @@ export class ExcelUtil {
             }
             let row = sheet.addRow(rowValues);
             //设置行样式
-            row.eachCell(cell => cell.style = cellStyle);
+            row.eachCell(cell => cell.style = <any>cellStyle);
             // 设置行高
             row.height = this.lstRowInfo[row.number - 1].height;
         }
@@ -459,6 +459,7 @@ export class ExcelUtil {
     //导出excel文件
     public static async write(fileName: string): Promise<void> {
         await this.workbook?.xlsx.writeFile(fileName);
+        this.workbook = null;
     }
 
 }

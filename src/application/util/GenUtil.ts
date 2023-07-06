@@ -11,6 +11,22 @@ export class GenUtil {
     private constructor() {
     }
 
+    public static recToStr(record: Record<string, any> | Array<Record<string, any>>, pretty?: boolean): string {
+        return typeof pretty === "undefined" ? JSON.stringify(record) : JSON.stringify(record, null, 2);
+    }
+
+    public static arrayToRecList<T>(lstObj: Array<T>): Array<Record<string, any>> {
+        let lstData = new Array<Record<string, any>>();
+        for (let obj of lstObj) {
+            lstData.push(
+                !(obj instanceof Map) ?
+                    this.objToRecord(obj) :
+                    this.mapToRecord(<Map<string, any>>obj)
+            );
+        }
+        return lstData;
+    }
+
     public static objToRecord<T>(obj: T): Record<string, any> {
         let recData: Record<string, any> = {};
         let methodNames = DataUtil.getPrototypes(obj);
@@ -45,8 +61,10 @@ export class GenUtil {
 
     public static mapToRecord(mapData: Map<string, any>): Record<string, any> {
         let recData: Record<string, any> = {};
+        let regStr = "^[+-]?\\d*(\\.\\d*)?(e[+-]?\\d+)?$";
+        let regex = new RegExp(regStr);
         for (let [key, value] of mapData) {
-            recData[key] = value;
+            recData[key] = regex.test(value) ? this.strToNumber(value) : value;
         }
         return recData;
     }
@@ -76,8 +94,8 @@ export class GenUtil {
     public static toHump(name: string): string {
         return name[0].toUpperCase() + name.substring(1)
             .replace(/\-(\w)/g, (all, letter) => {
-            return letter.toUpperCase();
-        });
+                return letter.toUpperCase();
+            });
     }
 
     public static toLine(name: string): string {
