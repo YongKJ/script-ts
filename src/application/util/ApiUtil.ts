@@ -71,7 +71,7 @@ export class ApiUtil {
 
     private static getUrl(api: string, params: Map<string, any>): string {
         let url = (api.includes("http") ? "" : "http://") + api;
-        url += params.size === 0 ? "" : "?" + qs.stringify(GenUtil.mapToObj(params));
+        url += params.size === 0 ? "" : "?" + qs.stringify(GenUtil.mapToRecord(params));
         LogUtil.loggerLine(Log.of("ApiUtil", "getUrl", "url", url));
         return url;
     }

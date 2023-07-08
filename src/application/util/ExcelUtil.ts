@@ -320,7 +320,7 @@ export class ExcelUtil {
 
     //自动设置列宽
     private static getWidthColByAuto(col: number, value: string): number {
-        let widthCol = this.lstColInfo[col].width || 0;
+        let widthCol = this.lstColInfo[col]?.width || 0;
         let tempWidthCol = this.getWidthCol(value);
         if (widthCol < tempWidthCol) {
             widthCol = tempWidthCol;

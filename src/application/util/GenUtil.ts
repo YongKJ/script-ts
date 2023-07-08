@@ -11,6 +11,82 @@ export class GenUtil {
     private constructor() {
     }
 
+    public static getKeys(data: Map<string, any> | Record<string, any>): Array<string> {
+        if (GenUtil.isJson(data)) {
+            return Object.keys(data);
+        }
+        let lstKey = new Array<string>();
+        for (let key of data.keys()) {
+            lstKey.push(key);
+        }
+        return lstKey;
+    }
+
+    public static arrayToObjList<T>(lstData: Array<Record<string, any> | Map<string, any>>, clazz: (new () => T) | T): Array<T> {
+        let lstObj = new Array<T>();
+        for (let data of lstData) {
+            lstObj.push(
+                this.isJson(data) ?
+                    this.recToObj(data, clazz) :
+                    this.mapToObj(<Map<string, any>>data, clazz)
+            );
+        }
+        return lstObj;
+    }
+
+    public static mapToObj<T>(mapData: Map<string, any>, clazz: (new () => T) | T): T {
+        let entity = typeof clazz === "function" ?
+            new (<new () => T>clazz)() : clazz;
+        let methodNames = DataUtil.getPrototypes(clazz);
+        for (let methodName of methodNames) {
+            entity[<keyof T>methodName] = mapData.get(methodName);
+        }
+        return entity;
+    }
+
+    public static recToObj<T>(recData: Record<string, any>, clazz: (new () => T) | T): T {
+        let entity = typeof clazz === "function" ?
+            new (<new () => T>clazz)() : clazz;
+        let methodNames = DataUtil.getPrototypes(clazz);
+        for (let methodName of methodNames) {
+            entity[<keyof T>methodName] = recData[methodName];
+        }
+        return entity;
+    }
+
+    public static arrayToMapList<T>(lstObj: Array<T>): Array<Map<string, any>> {
+        let lstData = new Array<Map<string, any>>();
+        for (let obj of lstObj) {
+            lstData.push(
+                !(this.isJson(obj)) ?
+                    this.objToMap(obj) :
+                    this.recToMap(<Map<string, any>>obj)
+            );
+        }
+        return lstData;
+    }
+
+    public static isJson<T>(obj: T): boolean {
+        return typeof obj !== "undefined" && obj !== null && (<Record<string, any>>obj).constructor === {}.constructor;
+    }
+
+    public static recToMap(recData: Record<string, any>): Map<string, any> {
+        let mapData = new Map<string, any>();
+        for (let key of Object.keys(recData)) {
+            mapData.set(key, recData[key]);
+        }
+        return mapData;
+    }
+
+    public static objToMap<T>(obj: T): Map<string, any> {
+        let mapData = new Map<string, any>();
+        let methodNames = DataUtil.getPrototypes(obj);
+        for (let methodName of methodNames) {
+            mapData.set(methodName, obj[<keyof T>methodName]);
+        }
+        return mapData;
+    }
+
     public static recToStr(record: Record<string, any> | Array<Record<string, any>>, pretty?: boolean): string {
         return typeof pretty === "undefined" ? JSON.stringify(record) : JSON.stringify(record, null, 2);
     }
@@ -32,6 +108,16 @@ export class GenUtil {
         let methodNames = DataUtil.getPrototypes(obj);
         for (let methodName of methodNames) {
             recData[methodName] = obj[<keyof T>methodName];
+        }
+        return recData;
+    }
+
+    public static mapToRecord(mapData: Map<string, any>): Record<string, any> {
+        let recData: Record<string, any> = {};
+        let regStr = "^[+-]?\\d*(\\.\\d*)?(e[+-]?\\d+)?$";
+        let regex = new RegExp(regStr);
+        for (let [key, value] of mapData) {
+            recData[key] = regex.test(value) ? this.strToNumber(value) : value;
         }
         return recData;
     }
@@ -59,22 +145,8 @@ export class GenUtil {
         return strs;
     }
 
-    public static mapToRecord(mapData: Map<string, any>): Record<string, any> {
-        let recData: Record<string, any> = {};
-        let regStr = "^[+-]?\\d*(\\.\\d*)?(e[+-]?\\d+)?$";
-        let regex = new RegExp(regStr);
-        for (let [key, value] of mapData) {
-            recData[key] = regex.test(value) ? this.strToNumber(value) : value;
-        }
-        return recData;
-    }
-
-    public static mapToObj(mapData: Map<string, any>): object {
-        const objData: Record<string, any> = {};
-        for (let [key, value] of mapData.entries()) {
-            objData[key] = value;
-        }
-        return objData;
+    public static strToRecord(str: string): Record<string, any> {
+        return JSON.parse(str);
     }
 
     public static strToDate(timeStr: string, format?: string, isISO?: boolean): Date | null {

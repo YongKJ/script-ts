@@ -13,6 +13,49 @@ export class ExceljsTest {
         this.excelPath = GenUtil.anyToStr(value);
     }
 
+    private async dataConversion(): Promise<void> {
+        let fileNames = Array.of(
+            "C:\\Users\\admin\\Desktop\\pi-mysql.txt",
+            "C:\\Users\\admin\\Desktop\\windows7-mysql.txt"
+        );
+        let lstData = new Array<Array<string>>();
+        let lstHeader = new Array<Array<string>>();
+        lstHeader.push(Array.of("ID"));
+        for (let fileName of fileNames) {
+            let lstLine = FileUtil.readByLine(fileName);
+            for (let i = 0; i < lstLine.length; i++) {
+                let tempLstData = i < lstData.length ? lstData[i] : new Array<string>();
+                let lineData = lstLine[i].replace(/'/g, "\"").trim();
+                let recData = GenUtil.strToRecord(lineData);
+                for (let key in recData) {
+                    if (!recData.hasOwnProperty(key)) continue;
+                    tempLstData.push(recData[key]);
+                }
+                if (i >= lstData.length) lstData.push(tempLstData);
+            }
+
+            let index = fileName.lastIndexOf(".");
+            let tempIndex = fileName.lastIndexOf("\\");
+            let prefix = fileName.substring(tempIndex + 1, index) + "-";
+            prefix = prefix.replace("windows7", "win7");
+            let lineData = lstLine[0].replace(/'/g, "\"").trim();
+            let recData = GenUtil.strToRecord(lineData);
+            for (let key in recData) {
+                lstHeader.push(Array.of(prefix + key));
+            }
+        }
+        ExcelUtil.writeHeader(lstHeader);
+        for (let i = 0, rowIndex = lstHeader[0].length; i < lstData.length; i++, rowIndex++) {
+            let colIndex = 0;
+            ExcelUtil.writeCellData(rowIndex, colIndex++, (i + 1) + "");
+            for (let j = 0; j < lstData[i].length; j++) {
+                ExcelUtil.writeCellData(rowIndex, colIndex++, lstData[i][j]);
+            }
+        }
+        ExcelUtil.packSheet();
+        await ExcelUtil.write("C:\\Users\\admin\\Desktop\\windows7-pi-mysql-data-" + Date.now() + ".xlsx");
+    }
+
     private async write(): Promise<void> {
         let lstHeader = [
             ["序号", "序号"],
@@ -46,18 +89,44 @@ export class ExceljsTest {
         await ExcelUtil.write("C:\\Users\\admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
     }
 
+    private async writeTest(): Promise<void> {
+        let lstData = await ExcelUtil.toMap(this.excelPath, 0);
+        let lstKey = GenUtil.getKeys(lstData[0]);
+        let lstHeader = new Array<Array<string>>();
+        for (let key of lstKey) {
+            lstHeader.push(Array.of(key));
+        }
+        let rowIndex = lstHeader[0].length;
+        ExcelUtil.writeHeader(lstHeader, undefined, 1);
+        for (let i = 0; i < lstData.length; i++, rowIndex++) {
+            for (let j = 0, colIndex = 0; j < lstKey.length; j++, colIndex++) {
+                ExcelUtil.writeCellData(rowIndex, colIndex, <string>lstData[i].get(lstKey[j]));
+            }
+        }
+        ExcelUtil.packSheet();
+        await ExcelUtil.write("C:\\Users\\admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
+    }
+
     private async read(): Promise<void> {
         let lstData = await ExcelUtil.toMap(this.excelPath, 0);
         let recData = GenUtil.arrayToRecList(lstData);
+        let mapData = GenUtil.arrayToMapList(recData);
         let keys = lstData[0].keys();
         // LogUtil.loggerLine(Log.of("ExceljsTest", "read", "lstData", lstData));
-        LogUtil.loggerLine(Log.of("ExceljsTest", "read", "recData", recData));
+        // let jsonObj = GenUtil.isJson(recData[0]);
+        // let instanceObj = GenUtil.isJson(new ExceljsTest());
+        // LogUtil.loggerLine(Log.of("ExceljsTest", "read", "recData[0]", (recData[0]).constructor));
+        // LogUtil.loggerLine(Log.of("ExceljsTest", "read", "jsonObj", jsonObj));
+        // LogUtil.loggerLine(Log.of("ExceljsTest", "read", "new ExceljsTest()", (new ExceljsTest().constructor)));
+        // LogUtil.loggerLine(Log.of("ExceljsTest", "read", "instanceObj", instanceObj));
+        // LogUtil.loggerLine(Log.of("ExceljsTest", "read", "recData", recData));
+        LogUtil.loggerLine(Log.of("ExceljsTest", "read", "mapData", mapData));
         LogUtil.loggerLine(Log.of("ExceljsTest", "read", "keys", keys));
         LogUtil.loggerLine(Log.of("ExceljsTest", "read", "lstData[0] instanceof Map", (lstData[0] instanceof Map)));
-        FileUtil.write(
-            "C:\\Users\\admin\\Desktop\\excel-to-json-test.json",
-            GenUtil.recToStr(recData, true)
-        );
+        // FileUtil.write(
+        //     "C:\\Users\\admin\\Desktop\\excel-to-json-test.json",
+        //     GenUtil.recToStr(recData, true)
+        // );
 
         // const workbook = new Workbook();
         // let book = await workbook.xlsx.readFile(this.excelPath);
@@ -115,8 +184,10 @@ export class ExceljsTest {
 
     public static run(): void {
         // new ExceljsTest().test();
-        new ExceljsTest().read().then();
+        // new ExceljsTest().read().then();
         // new ExceljsTest().write().then();
+        // new ExceljsTest().writeTest().then();
+        new ExceljsTest().dataConversion().then();
     }
 
 }

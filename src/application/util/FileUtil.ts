@@ -41,6 +41,10 @@ export class FileUtil {
         return fs.readFileSync(fileName, "utf-8");
     }
 
+    public static readByLine(fileName: string): Array<string> {
+        return fs.readFileSync(fileName, "utf-8").split("\n");
+    }
+
     public static write(fileName: string, content: string): void {
         fs.writeFileSync(fileName, content);
     }
