@@ -10,11 +10,16 @@ export class FileUtil {
     private constructor() {
     }
 
-    public static appDir(isProd?: boolean): string {
+    public static getLaunchName(): string {
         let launchName = require.main?.filename;
         if (typeof launchName === "undefined") {
-            launchName = __filename;
+            return __filename;
         }
+        return launchName;
+    }
+
+    public static appDir(isProd?: boolean): string {
+        let launchName = this.getLaunchName();
         let appDir = PathUtil.dirname(launchName);
         if (isProd) return appDir;
         return PathUtil.dirname(appDir);
@@ -42,7 +47,9 @@ export class FileUtil {
     }
 
     public static readByLine(fileName: string): Array<string> {
-        return fs.readFileSync(fileName, "utf-8").split("\n");
+        let content = fs.readFileSync(fileName, "utf-8");
+        let sep = content.includes("\r\n") ? "\r\n" : "\n";
+        return content.split(sep);
     }
 
     public static write(fileName: string, content: string): void {

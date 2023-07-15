@@ -8,7 +8,7 @@ export class Demo {
     private readonly msg: string;
 
     public constructor() {
-        let value = GenUtil.getValue("demo.yaml", "msg");
+        let value = GenUtil.getValue("msg");
         this.msg = GenUtil.anyToStr(value);
     }
 
@@ -90,13 +90,27 @@ export class Demo {
         return Demo.count(a, b - 1) + Demo.count(a + 1, b);
     }
 
+    private test7(): void {
+        let path = FileUtil.getAbsPath(false, "src", "application", "ApplicationTest.ts");
+        let regex = new RegExp("^((?!\\s\\/).)*\\s+(\\S+).run\\(\\);");
+        let contentArray = FileUtil.readByLine(path);
+        for (let line of contentArray) {
+            if (!regex.test(line)) continue;
+            let lstMatch = line.match(regex);
+            if (lstMatch == null) continue;
+            LogUtil.loggerLine(Log.of("Demo", "test7", "match", lstMatch[2]));
+            break;
+        }
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test6();
+        // demo.test6();
         // demo.test5();
         // demo.test4();
         // demo.test3();
         // demo.test1();
+        demo.test();
     }
 
 }

@@ -9,7 +9,7 @@ export class ExceljsTest {
     private readonly excelPath: string;
 
     private constructor() {
-        let value = GenUtil.getValue("exceljs-test.yaml", "excel-path");
+        let value = GenUtil.getValue("excel-path");
         this.excelPath = GenUtil.anyToStr(value);
     }
 

@@ -175,8 +175,32 @@ export class GenUtil {
             .replace(/([A-Z])/g, "-$1").toLowerCase();
     }
 
-    public static getValue(config: string, key: string): unknown {
-        let path = this.getConfigPath(config);
+    private static getYaml(): string {
+        let launchName = FileUtil.getLaunchName();
+        let sep = launchName.includes("\\") ? "\\" : "/";
+        if (!launchName.endsWith("script-ts.js")) {
+            let index = launchName.lastIndexOf(sep);
+            let name = launchName.substring(index + 1);
+            return this.toLine(name.replace(".js", ".yaml"));
+        }
+        return this.getYamlByContent();
+    }
+
+    private static getYamlByContent(): string {
+        let path = FileUtil.getAbsPath(false, "src", "application", "ApplicationTest.ts");
+        let regex = new RegExp("^((?!\\s\\/).)*\\s+(\\S+).run\\(\\);");
+        let contentArray = FileUtil.readByLine(path);
+        for (let line of contentArray) {
+            if (!regex.test(line)) continue;
+            let lstMatch = line.match(regex);
+            if (lstMatch == null) continue;
+            return this.toLine(lstMatch[2]) + ".yaml";
+        }
+        return "";
+    }
+
+    public static getValue(key: string): unknown {
+        let path = this.getConfigPath(this.getYaml());
         let content = FileUtil.read(path);
         return YAML.parse(content)[key];
     }

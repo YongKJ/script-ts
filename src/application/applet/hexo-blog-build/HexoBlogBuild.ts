@@ -31,8 +31,8 @@ export class HexoBlogBuild {
     private readonly authClientApi: AuthClientApi;
 
     private constructor() {
+        let path = GenUtil.getValue("project-path");
         this.nameFilters = Array.of(".git", ".gitignore", "LICENSE", "README.md");
-        let path = GenUtil.getValue("hexo-blog-build.yaml", "project-path");
         this.authClientApi = new AuthClientApi(this.setMsgUtil);
         this.blogBuild = BlogBuild.get(GenUtil.anyToStr(path));
         this.giteaController = new GiteaController();

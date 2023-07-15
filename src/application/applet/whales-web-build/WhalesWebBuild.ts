@@ -25,8 +25,8 @@ export class WhalesWebBuild {
     private giteaController: GiteaController;
 
     private constructor() {
+        let path = GenUtil.getValue("project-path");
         this.names = Array.of("css", "fonts", "img", "js", "model", "index.html", "favicon.ico");
-        let path = GenUtil.getValue("whales-web-build.yaml", "project-path");
         this.webBuild = WebBuild.get(GenUtil.anyToStr(path));
         this.giteaController = new GiteaController();
         this.type = GenUtil.readCommand();
