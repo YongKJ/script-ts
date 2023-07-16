@@ -3,6 +3,7 @@ import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
 import {ExcelUtil} from "../../util/ExcelUtil";
 import {FileUtil} from "../../util/FileUtil";
+import {SheetUtil} from "../../util/SheetUtil";
 
 export class ExceljsTest {
 
@@ -73,20 +74,20 @@ export class ExceljsTest {
         ];
 
         for (let num = 1; num <= 5; num++) {
-            ExcelUtil.writeHeader(lstHeader, undefined, 1);
+            SheetUtil.writeHeader(lstHeader, undefined, 1);
             for (let i = 0, rowIndex = 2; i < lstData.length; i++, rowIndex++) {
                 let colIndex = 0;
-                ExcelUtil.writeCellData(rowIndex, colIndex++, (i + 1) + "");
+                SheetUtil.writeCellData(rowIndex, colIndex++, (i + 1) + "");
                 for (let j = 0; j < lstData[i].length; j++) {
-                    ExcelUtil.writeCellData(rowIndex, colIndex++, lstData[i][j]);
+                    SheetUtil.writeCellData(rowIndex, colIndex++, lstData[i][j]);
                 }
             }
             // ExcelUtil.writePicture(2, 3, 2, 2,
             //     "C:\\Users\\admin\\Pictures\\Saved Pictures\\核心硬件评测.png");
-            ExcelUtil.packSheet();
+            SheetUtil.packSheet();
         }
 
-        await ExcelUtil.write("C:\\Users\\admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
+        SheetUtil.write("C:\\Users\\admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
     }
 
     private async writeTest(): Promise<void> {
@@ -185,9 +186,9 @@ export class ExceljsTest {
     public static run(): void {
         // new ExceljsTest().test();
         // new ExceljsTest().read().then();
-        // new ExceljsTest().write().then();
+        new ExceljsTest().write().then();
         // new ExceljsTest().writeTest().then();
-        new ExceljsTest().dataConversion().then();
+        // new ExceljsTest().dataConversion().then();
     }
 
 }
