@@ -103,14 +103,21 @@ export class Demo {
         }
     }
 
+    private test8(): void {
+        let url = "http://alpine.yongkj.cn/dataGenerate/subscribe?type=";
+        LogUtil.loggerLine(Log.of("Demo", "test8", "shadowSocksUrl", url + GenUtil.getEnCode("shadowSocks")));
+        LogUtil.loggerLine(Log.of("Demo", "test8", "flyBirdCloudUrl", url + GenUtil.getEnCode("flyBirdCloud")));
+    }
+
     public static run(): void {
         let demo = new Demo();
+        demo.test8();
         // demo.test6();
         // demo.test5();
         // demo.test4();
         // demo.test3();
         // demo.test1();
-        demo.test();
+        // demo.test();
     }
 
 }

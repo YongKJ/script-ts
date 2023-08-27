@@ -11,6 +11,17 @@ export class GenUtil {
     private constructor() {
     }
 
+    public static getDeCode(lstStr: Array<string> | string): Array<string> | string {
+        if (typeof lstStr === "string") return this.getDeCodeStr(lstStr);
+        let strs = new Array<string>();
+        lstStr.forEach(str => strs.push(this.getDeCodeStr(str)))
+        return strs;
+    }
+
+    private static getDeCodeStr(str: string): string {
+        return Buffer.from(OrbitEncoder.decodeURIsafe(str), "base64").toString();
+    }
+
     public static getKeys(data: Map<string, any> | Record<string, any>): Array<string> {
         if (GenUtil.isJson(data)) {
             return Object.keys(data);
