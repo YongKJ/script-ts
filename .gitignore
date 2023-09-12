@@ -129,6 +129,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 yarn.lock
+pnpm-lock.yaml
 
 # webstorm
 .idea
