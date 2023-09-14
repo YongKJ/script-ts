@@ -21,7 +21,9 @@ export class PuppeteerTest {
             ],
         });
 
-        const page = await browser.newPage();
+
+        // const page = await browser.newPage();
+        const page = (await browser.pages())[0];
         await page.setViewport({
             width: 1920,
             height: 1280,
