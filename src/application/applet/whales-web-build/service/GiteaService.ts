@@ -7,6 +7,7 @@ export class GiteaService {
     private readonly gitea: Api<unknown>;
 
     public constructor() {
+        // @ts-ignore
         this.gitea = new giteaApi(Global.GITEA_BASE_URL, {
             token: Global.GITEA_AUTH_TOKEN,
             customFetch: fetch

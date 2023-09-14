@@ -13,6 +13,7 @@
     "form-data": "^4.0.0",
     "gitea-js": "1.16.2",
     "orbit-encoder": "^2.1.0",
+    "puppeteer-core": "^21.2.1",
     "qs": "^6.11.1",
     "rimraf": "^5.0.0",
     "simple-git": "^3.18.0",

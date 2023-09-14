@@ -7,6 +7,7 @@ export class GiteaService {
     private readonly gitea: Api<unknown>;
 
     public constructor() {
+        // @ts-ignore
         this.gitea = new giteaApi(Global.GITEA_BASE_URL, {
             token: Global.GITEA_AUTH_TOKEN,
             customFetch: fetch
@@ -18,7 +19,7 @@ export class GiteaService {
     }
 
     public async deleteRepo(owner: string, name: string): Promise<void> {
-         await this.gitea.repos.repoDelete(owner, name);
+        await this.gitea.repos.repoDelete(owner, name);
     }
 
     public async createRepo(option: CreateRepoOption): Promise<Repository> {
