@@ -13,9 +13,12 @@ export class PuppeteerTest {
     private async apply(): Promise<void> {
         const browser = await puppeteer.launch({
             executablePath: this.chromePath,
-            args: ['--start-maximized'],
             headless: false,
-            timeout: 15000
+            timeout: 15000,
+            args: [
+                '--no-sandbox',
+                '--start-maximized'
+            ],
         });
 
         const page = await browser.newPage();
