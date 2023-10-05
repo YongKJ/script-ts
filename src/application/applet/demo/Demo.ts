@@ -109,9 +109,81 @@ export class Demo {
         LogUtil.loggerLine(Log.of("Demo", "test8", "flyBirdCloudUrl", url + GenUtil.getEnCode("flyBirdCloud")));
     }
 
+    private test9(): void {
+        let url = "http://alpine.yongkj.cn/dataGenerate/subscribe?type=";
+        let replaceOne = url.replace(new RegExp("/", "g"), "\\\/");
+        // replaceOne = replaceOne.replace(/\//g, "\\");
+        let replaceTwo = url.replace(/\//g, "\\");
+        let replaceThree = url.replace(/\//g, "\/");
+        let replaceFour = url.replace(/\//g, "\\");
+        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceOne", GenUtil.recToStr({url: replaceOne})));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceTwo", GenUtil.recToStr({url: replaceTwo})));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceThree", GenUtil.recToStr({url: replaceThree})));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceFour", GenUtil.recToStr({url: replaceFour})));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "str", GenUtil.recToStr({str: "http:\\/\\/alpine.yongkj.cn\/dataGenerate\/subscribe?type="})));
+    }
+
+    private test10(): void {
+        let audios = Demo.getAudios();
+        let mapKey = Demo.getAudioKeyMap();
+        let lstAudiosStr = new Array<string>();
+        let lstAudio = new Array<Record<string, any>>();
+        for (let audio of audios) {
+            let tempAudio: Record<string, any> = {};
+            for (let [key, value] of mapKey) {
+                tempAudio[key] = audio[value];
+            }
+            lstAudio.push(tempAudio);
+            console.log(GenUtil.recToStr(tempAudio));
+            lstAudiosStr.push(GenUtil.recToStr(tempAudio))
+        }
+        FileUtil.write("C:\\Users\\admin\\Desktop\\test.json", lstAudiosStr.join("\n"));
+        LogUtil.loggerLine(Log.of("Demo", "test10", "lstAudio", lstAudio));
+        LogUtil.loggerLine(Log.of("Demo", "test10", "lstAudioStr", lstAudiosStr.join("\n")));
+    }
+
+    private static getAudioKeyMap(): Map<string, any> {
+        return new Map<string, any>([
+            ["title", "name"],
+            ["author", "artist"],
+            ["url", "url"],
+            ["pic", "cover"],
+        ]);
+    }
+
+    private static getAudios(): Array<Record<string, any>> {
+        return Array.of({
+            lrc: "",
+            artist: "Jose Feliciano Vs Boney M",
+            name: "Feliz Navidad",
+            cover: "https://alpine.yongkj.cn/path/view?path=JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3ADwEUA7AIQC0BZARgElrgAmdwgBM0aYIQC28FIRzj8Aa0H4ohUYXph5tLIQDMwcexAAFWgF4zQA",
+            url: "https://alpine.yongkj.cn/path/view?path=JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3SgWQBUAxEGgWwA8BHOgEQCFoYAKQASUbgC1BAJTqEA9uJgBGAM4QlaABoZNYaYQAOK4AGsAJirAm0DMPhQmo+NgUJmp4pePhRhYAJZSAAye+HSCaiyCAKxmAExmGFAYwACewG4kvgDGAMxSAHaSMgyU4hhguZ6CPjBszEqCcnTkYADCdCxSwHQFvOKIGIIAMqBgAPJQ5Db47IFxnBlmMGb4MQCKaGYgg4LcoACSSrCEdOsm0TRQjLl0mtkAnAAK6wC8r0A",
+        }, {
+            lrc: "",
+            artist: "爵士轻音乐",
+            name: "Feliz Navidad",
+            cover: "https://alpine.yongkj.cn/path/view?path=JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3ADwEUA7AIQC0BZARgElrgAmdwgBM0aYIQC28FIRzj8Aa0H4ohUYXph5tLIQDMwcexAAFWgF4zQA",
+            url: "https://alpine.yongkj.cn/path/view?path=JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3SgWQBUAxEGgWwA8BHOgYXjRIAaAJTSEATAAc2AaTEBrAKwATEvHgAtAHY1c2QrgCKABgaaMLAIz4AxmIbAoYpRigZgAT2CEVEBhIAiYMIgQuRGAJxAA",
+        }, {
+            lrc: "",
+            artist: "Dido",
+            name: "Thank You",
+            cover: "https://alpine.yongkj.cn/path/view?path=JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3ADwEUA7AIQC0BZARgElrgAmdwgBM0aYIQC28FIRzj8Aa0H4ohUYXph5tLIQDMwcexAAFWgF4zQA",
+            url: "https://alpine.yongkj.cn/path/view?path=JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3SgWQBUAxEGgWwA8BHOgEQCESAxgwAOACQDyMACY0MABgBShYBinT8DAKwBFNMICWNAIyEAdiTkZNUQsPixhKQnIBaWEhhcQhYsy4Ay2M7AcgBKYAAK2gC80UA",
+        }, {
+            lrc: "",
+            artist: "Piano Cover",
+            name: "Imagine",
+            cover: "https://alpine.yongkj.cn/path/view?path=JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3ADwEUA7AIQC0BZARgElrgAmdwgBM0aYIQC28FIRzj8Aa0H4ohUYXph5tLIQDMwcexAAFWgF4zQA",
+            url: "https://alpine.yongkj.cn/path/view?path=JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3SgWQBUAxEGgWwA8BHOgEQCFKAJiwYAJMDAEYASgEYAWjOAsADAFZJabjQl1CWBgHt8IAFIBnAYQAOdAIr4AnISkAmNgaXKALAvIBPAHk6Ewh8cjRKOhhlNgFlGQBmAAU6ZQBeIA",
+        });
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test8();
+        demo.test10();
+        // demo.test9();
+        // demo.test8();
         // demo.test6();
         // demo.test5();
         // demo.test4();
