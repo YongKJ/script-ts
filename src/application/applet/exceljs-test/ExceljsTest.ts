@@ -53,17 +53,16 @@ export class ExceljsTest {
                 ExcelUtil.writeCellData(rowIndex, colIndex++, lstData[i][j]);
             }
         }
-        ExcelUtil.packSheet();
         await ExcelUtil.write("C:\\Users\\admin\\Desktop\\windows7-pi-mysql-data-" + Date.now() + ".xlsx");
     }
 
     private async write(): Promise<void> {
         let lstHeader = [
-            ["序号", "序号"],
-            ["书名", "书名"],
-            ["作者", "作者"],
-            ["年代", "年代"],
-            ["字数", "字数"],
+            ["序号"],
+            ["书名"],
+            ["作者"],
+            ["年代"],
+            ["字数"],
         ];
         let lstData = [
             ["《水浒传》", "施耐庵", "宋朝", "96 万字"],
@@ -73,9 +72,10 @@ export class ExceljsTest {
             ["《聊斋志异》", "蒲松龄", "清代", "70.8 万字"],
         ];
 
+        let dataRow = lstHeader[0].length;
         for (let num = 1; num <= 5; num++) {
             SheetUtil.writeHeader(lstHeader, undefined, 1);
-            for (let i = 0, rowIndex = 2; i < lstData.length; i++, rowIndex++) {
+            for (let i = 0, rowIndex = dataRow; i < lstData.length; i++, rowIndex++) {
                 let colIndex = 0;
                 SheetUtil.writeCellData(rowIndex, colIndex++, (i + 1) + "");
                 for (let j = 0; j < lstData[i].length; j++) {
@@ -87,7 +87,7 @@ export class ExceljsTest {
             SheetUtil.packSheet();
         }
 
-        SheetUtil.write("C:\\Users\\admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
+        SheetUtil.write("C:\\Users\\Admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
     }
 
     private async writeTest(): Promise<void> {
@@ -104,8 +104,7 @@ export class ExceljsTest {
                 ExcelUtil.writeCellData(rowIndex, colIndex, <string>lstData[i].get(lstKey[j]));
             }
         }
-        ExcelUtil.packSheet();
-        await ExcelUtil.write("C:\\Users\\admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
+        await ExcelUtil.write("C:\\Users\\Admin\\Desktop\\demo-width-auto-" + Date.now() + ".xlsx");
     }
 
     private async read(): Promise<void> {
@@ -183,11 +182,17 @@ export class ExceljsTest {
         LogUtil.loggerLine(Log.of("ExceljsTest", "test", "excelPath", this.excelPath));
     }
 
+    private test1(): void {
+        const arr = new Array(3).fill(false).map(() => new Array(4).fill(false));
+        LogUtil.loggerLine(Log.of("ExceljsTest", "test1", "arr", arr));
+    }
+
     public static run(): void {
+        // new ExceljsTest().test1();
         // new ExceljsTest().test();
         // new ExceljsTest().read().then();
-        new ExceljsTest().write().then();
-        // new ExceljsTest().writeTest().then();
+        // new ExceljsTest().write().then();
+        new ExceljsTest().writeTest().then();
         // new ExceljsTest().dataConversion().then();
     }
 

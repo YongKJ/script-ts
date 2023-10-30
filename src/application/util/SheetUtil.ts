@@ -438,6 +438,9 @@ export class SheetUtil {
 
     //导出excel文件
     public static write(fileName: string): void {
+        if (this.workbook == null) {
+            this.packSheet();
+        }
         let XLSX_STYLE = require(path.join(
             __dirname,
             "../../../src/application/module/xlsx-style/xlsx.js"

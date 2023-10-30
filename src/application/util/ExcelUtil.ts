@@ -458,6 +458,9 @@ export class ExcelUtil {
 
     //导出excel文件
     public static async write(fileName: string): Promise<void> {
+        if (this.workbook == null) {
+            this.packSheet();
+        }
         await this.workbook?.xlsx.writeFile(fileName);
         this.workbook = null;
     }
