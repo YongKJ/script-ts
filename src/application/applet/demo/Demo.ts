@@ -179,9 +179,19 @@ export class Demo {
         });
     }
 
+    private test11(): void {
+        let fileName = "C:\\Users\\Admin\\Desktop\\.env.dev";
+        FileUtil.modFile(
+            fileName,
+            "^VITE_HTTP_BASE_URL\\s*=\\s*(http.+)",
+            "https://bc.yongkj.cn/"
+        )
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test10();
+        demo.test11();
+        // demo.test10();
         // demo.test9();
         // demo.test8();
         // demo.test6();
