@@ -180,17 +180,35 @@ export class Demo {
     }
 
     private test11(): void {
+        let trojanUrl = "https://s.trojanflare.com/subscription/shadowrocket/f66bedda-273d-4baa-a291-d93b422ab5ed";
+        let surgeUrl = "https://s.trojanflare.com/surge/f66bedda-273d-4baa-a291-d93b422ab5ed";
+        LogUtil.loggerLine(Log.of("Demo", "test11", "trojanUrl", GenUtil.getEnCode(trojanUrl)));
+        LogUtil.loggerLine(Log.of("Demo", "test11", "surgeUrl", GenUtil.getEnCode(surgeUrl)));
+    }
+
+    private test12(): void {
         let fileName = "C:\\Users\\Admin\\Desktop\\.env.dev";
-        FileUtil.modFile(
+        FileUtil.modContent(
             fileName,
             "^VITE_HTTP_BASE_URL\\s*=\\s*(http.+)",
             "https://bc.yongkj.cn/"
         )
     }
 
+    private test13(): void {
+        let fileName = "D:\\Document\\MyCodes\\BC-Space\\Worker\\Web\\desktop-platform\\package.json";
+        FileUtil.modContent(
+            fileName,
+            ".*\"build:dev\".*\"(.*)\"",
+            "vite build --mode dev"
+        )
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test11();
+        demo.test13();
+        // demo.test12();
+        // demo.test11();
         // demo.test10();
         // demo.test9();
         // demo.test8();
