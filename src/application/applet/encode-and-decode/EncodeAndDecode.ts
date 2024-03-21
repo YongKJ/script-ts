@@ -13,7 +13,9 @@ export class EncodeAndDecode {
         // this.decode().then();
         // this.decode1();
         // this.decode2();
-        this.decode3();
+        // this.decode3();
+        this.decode4();
+        this.decode5();
     }
 
     private decode2(): void {
@@ -93,6 +95,24 @@ export class EncodeAndDecode {
         LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "encryptStr", encryptStr));
         let decryptStr = this.decrypt(base64Content, base64Key, base64Iv);
         LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "decryptStr", decryptStr));
+    }
+
+    private decode4(): void {
+        let content = "{\"mac\":\"tiwenji111\",\"utcLog\":1314520,\"data\":\"{\\\"data:\\\": \\\"Hello world!\\\"}\",\"uniqueId\":\"5201314\"}";
+        let base64Iv = "A6pJexKwotG5YPuTlGNE3w==";
+        let base64Key = "kgEgiJZ6/Tw+xba5FaWf3Hh4MtJdBFJWuyHrBG6CvzQ=";
+
+        let encryptStr = this.encrypt(content, base64Key, base64Iv);
+        LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "encryptStr", encryptStr));
+    }
+
+    private decode5(): void {
+        let content = "{\"dataList\":[{\"mac\":\"tiwenji111\",\"utcLog\":5201314,\"data\":\"{\\\"data:\\\": \\\"世界你好\\\"}\",\"uniqueId\":\"1314520\"}]}";
+        let base64Iv = "A6pJexKwotG5YPuTlGNE3w==";
+        let base64Key = "kgEgiJZ6/Tw+xba5FaWf3Hh4MtJdBFJWuyHrBG6CvzQ=";
+
+        let encryptStr = this.encrypt(content, base64Key, base64Iv);
+        LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "encryptStr", encryptStr));
     }
 
     private encrypt(plainText: string, keyBase64: string, ivBase64: string): string {
