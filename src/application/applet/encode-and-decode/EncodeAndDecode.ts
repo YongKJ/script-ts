@@ -14,7 +14,7 @@ export class EncodeAndDecode {
         // this.decode1();
         // this.decode2();
         // this.decode3();
-        this.decode4();
+        // this.decode4();
         this.decode5();
     }
 
@@ -112,7 +112,44 @@ export class EncodeAndDecode {
         let base64Key = "kgEgiJZ6/Tw+xba5FaWf3Hh4MtJdBFJWuyHrBG6CvzQ=";
 
         let encryptStr = this.encrypt(content, base64Key, base64Iv);
-        LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "encryptStr", encryptStr));
+        LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode5", "encryptStr", encryptStr));
+        let encryptStrByCryptoJS = this.encryptByCryptoJS(content, base64Key, base64Iv);
+        LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode5", "encryptStrByCryptoJS", encryptStrByCryptoJS));
+    }
+
+    private encryptByCryptoJS(plainText: string, keyBase64: string, ivBase64: string): string {
+        const key = Buffer.from(keyBase64, 'base64');
+        const iv = Buffer.from(ivBase64, 'base64');
+
+        let encryptParams = CryptoJS.AES.encrypt(
+            plainText,
+            CryptoJS.enc.Utf8.parse(key.toString()),
+            {
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7,
+                iv: CryptoJS.enc.Hex.parse(iv.toString()),
+            });
+        return encryptParams.ciphertext.toString(CryptoJS.enc.Base64);
+    }
+
+    private decryptByCryptoJS(messageBase64: string, keyBase64: string, ivBase64: string) {
+        const message = Buffer.from(messageBase64, 'base64');
+        const key = Buffer.from(keyBase64, 'base64');
+        const iv = Buffer.from(ivBase64, 'base64');
+
+        let encryptedCP = CryptoJS.lib.CipherParams.create({
+            ciphertext: CryptoJS.enc.Utf8.parse(message.toString()),
+        });
+
+        let decryptParams = CryptoJS.AES.decrypt(
+            encryptedCP,
+            CryptoJS.enc.Utf8.parse(key.toString()),
+            {
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7,
+                iv: CryptoJS.enc.Utf8.parse(iv.toString()),
+            });
+        return decryptParams.toString(CryptoJS.enc.Utf8);
     }
 
     private encrypt(plainText: string, keyBase64: string, ivBase64: string): string {
