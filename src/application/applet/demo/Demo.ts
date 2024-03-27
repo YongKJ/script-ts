@@ -182,8 +182,12 @@ export class Demo {
     private test11(): void {
         let trojanUrl = "https://s.trojanflare.com/subscription/shadowrocket/f66bedda-273d-4baa-a291-d93b422ab5ed";
         let surgeUrl = "https://s.trojanflare.com/surge/f66bedda-273d-4baa-a291-d93b422ab5ed";
+        let flyBirdCloudUrl = "https://feiniaoyun01.life/api/v1/client/subscribe?token=3a6173b18d1158c27461e8ccf1fc4eca";
+        let flyBirdCloudTwoUrl = "https://feiniaoyun01.life/api/v1/client/subscribe?token=bc5620242a7db1140284516f661851b5";
         LogUtil.loggerLine(Log.of("Demo", "test11", "trojanUrl", GenUtil.getEnCode(trojanUrl)));
         LogUtil.loggerLine(Log.of("Demo", "test11", "surgeUrl", GenUtil.getEnCode(surgeUrl)));
+        LogUtil.loggerLine(Log.of("Demo", "test11", "flyBirdCloudUrl", GenUtil.getEnCode(flyBirdCloudUrl)));
+        LogUtil.loggerLine(Log.of("Demo", "test11", "flyBirdCloudTwoUrl", GenUtil.getEnCode(flyBirdCloudTwoUrl)));
     }
 
     private test12(): void {
@@ -206,9 +210,9 @@ export class Demo {
 
     public static run(): void {
         let demo = new Demo();
-        demo.test13();
+        // demo.test13();
         // demo.test12();
-        // demo.test11();
+        demo.test11();
         // demo.test10();
         // demo.test9();
         // demo.test8();
