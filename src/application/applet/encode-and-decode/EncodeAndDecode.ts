@@ -14,8 +14,8 @@ export class EncodeAndDecode {
         // this.decode1();
         // this.decode2();
         // this.decode3();
-        // this.decode4();
-        this.decode5();
+        this.decode4();
+        // this.decode5();
     }
 
     private decode2(): void {
@@ -99,8 +99,8 @@ export class EncodeAndDecode {
 
     private decode4(): void {
         let content = "{\"mac\":\"tiwenji111\",\"utcLog\":1314520,\"data\":\"{\\\"data:\\\": \\\"Hello world!\\\"}\",\"uniqueId\":\"5201314\"}";
-        let base64Iv = "A6pJexKwotG5YPuTlGNE3w==";
-        let base64Key = "kgEgiJZ6/Tw+xba5FaWf3Hh4MtJdBFJWuyHrBG6CvzQ=";
+        let base64Iv = "xw8FN8BstqZ9yLLGQoNvpA==";
+        let base64Key = "tv50dwo2PWL7WnGc4j14ZPV95nQPGqatQYdJ8c23vVU=";
 
         let encryptStr = this.encrypt(content, base64Key, base64Iv);
         LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "encryptStr", encryptStr));
