@@ -7,6 +7,8 @@ import {AuthClientApi} from "../client/AuthClientApi";
 import {GenUtil} from "../../util/GenUtil";
 import {ServerUtil} from "../util/ServerUtil";
 import {Global} from "../config/Global";
+import {LogUtil} from "../../util/LogUtil";
+import {Log} from "../../pojo/dto/Log";
 
 export class UpgradeClientService {
 
@@ -50,11 +52,11 @@ export class UpgradeClientService {
         return ApiUtil.requestWithFileAndTokenByPostToEntity(this.UPLOAD, formData, ResponseData);
     }
 
-    public async delete(baseUrl: string, folder: string): Promise<ResponseData | Error> {
+    public async delete(baseUrl: string, paths: Array<string>): Promise<ResponseData | Error> {
         await this.setBaseUrl(baseUrl);
 
         let formData = new FormData();
-        formData.append("paths", GenUtil.getEnCode(folder));
+        formData.append("paths", GenUtil.listToStr(paths, "/"));
 
         return ApiUtil.requestWithFileAndTokenByPostToEntity(this.DELETE, formData, ResponseData);
     }

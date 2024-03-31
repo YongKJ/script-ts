@@ -18,7 +18,9 @@ export class ServerUtil {
     }
 
     private static consumer(): void {
-        if (typeof ServerUtil.msgUtil === "undefined" || ServerUtil.messages.length === 0) {
+        if (typeof ServerUtil.msgUtil === "undefined" ||
+            ServerUtil.terminal.id.length === 0 ||
+            ServerUtil.messages.length === 0) {
             return;
         }
         for (let msg of ServerUtil.messages) {

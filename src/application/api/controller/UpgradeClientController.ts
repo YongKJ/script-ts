@@ -1,5 +1,6 @@
 import {UpgradeClientService} from "../service/UpgradeClientService";
 import {ResponseData} from "../pojo/dto/ResponseData";
+import {GenUtil} from "../../util/GenUtil";
 
 export class UpgradeClientController {
 
@@ -17,8 +18,8 @@ export class UpgradeClientController {
         return this.upgradeClientService.upload(baseUrl, path, folder);
     }
 
-    public delete(baseUrl: string, folder: string): Promise<ResponseData | Error> {
-        return this.upgradeClientService.delete(baseUrl, folder);
+    public delete(baseUrl: string, paths: Array<string>): Promise<ResponseData | Error> {
+        return this.upgradeClientService.delete(baseUrl, <Array<string>>GenUtil.getEnCode(paths));
     }
 
     public create(baseUrl: string, folder: string): Promise<ResponseData | Error> {
