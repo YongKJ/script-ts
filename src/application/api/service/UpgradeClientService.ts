@@ -75,8 +75,9 @@ export class UpgradeClientService {
         return ApiUtil.requestWithParamsAndTokenByGetToEntity(this.RESTART, new Map<string, any>(), ResponseData);
     }
 
-    public sendMessage(msg: TerminalMessage, taskFunc?: () => void): void {
-        ServerUtil.sendMessage(msg, taskFunc);
+    public sendMessage(msg: string, taskFunc?: () => void): void {
+        ServerUtil.sendMessage(TerminalMessage.of(
+            "", {cmd: GenUtil.getEnCode(msg)}, [], "exec"), taskFunc);
     }
 
     private async setBaseUrl(value: string, uploadUrl?: string): Promise<void> {

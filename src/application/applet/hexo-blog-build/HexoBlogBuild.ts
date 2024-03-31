@@ -135,16 +135,13 @@ export class HexoBlogBuild {
     }
 
     private async remoteServerPull(): Promise<void> {
-        this.upgradeClientController.sendMessage(TerminalMessage.of(
-            "", {
-                cmd: GenUtil.getEnCode(
-                    "cd /var/www/localhost/application/blog\n" +
-                    "rm -rf public\n" +
-                    "git clone " + this.repo.clone_url + "\n" +
-                    "mv hexo-blog-dist public\n" +
-                    "exit\n"
-                )
-            }, [], "exec"), this.countTime);
+        this.upgradeClientController.sendMessage(
+            "cd /var/www/localhost/application/blog\n" +
+            "rm -rf public\n" +
+            "git clone " + this.repo.clone_url + "\n" +
+            "mv hexo-blog-dist public\n" +
+            "exit\n",
+            this.countTime);
     }
 
     public static run(): void {

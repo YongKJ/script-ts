@@ -1,6 +1,5 @@
 import {UpgradeClientService} from "../service/UpgradeClientService";
 import {ResponseData} from "../pojo/dto/ResponseData";
-import {TerminalMessage} from "../pojo/dto/TerminalMessage";
 
 export class UpgradeClientController {
 
@@ -30,8 +29,8 @@ export class UpgradeClientController {
         return this.upgradeClientService.restart(baseUrl);
     }
 
-    public sendMessage(msg: TerminalMessage, taskFunc?: () => void): void {
-        this.upgradeClientService.sendMessage(msg, taskFunc);
+    public sendMessage(cmd: string, taskFunc?: () => void): void {
+        this.upgradeClientService.sendMessage(cmd, taskFunc);
     }
 
 }
