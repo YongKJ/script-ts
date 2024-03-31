@@ -1,13 +1,19 @@
-import {Global} from "../config/Global";
 import {ResponseData} from "../pojo/dto/ResponseData";
 import FormData from "form-data";
 import {ApiUtil} from "../../util/ApiUtil";
 
 export class AuthClientService {
 
-    private readonly BASE_URL = Global.API_BASE_URL;
-    private readonly LOGIN = this.BASE_URL + "/auth/login";
-    private readonly REFRESH = this.BASE_URL + "/auth/refresh";
+    private _BASE_URL: string;
+    private REFRESH: string;
+    private LOGIN: string;
+
+    public constructor(baseUrl: string) {
+        this._BASE_URL = baseUrl;
+        this.LOGIN = this._BASE_URL + "/auth/login";
+        this.REFRESH = this._BASE_URL + "/auth/refresh"
+    }
+
 
     public refresh(refreshToken: string, acquireName?: boolean): Promise<ResponseData | Error> {
         let formData = new FormData();
@@ -27,5 +33,10 @@ export class AuthClientService {
         return ApiUtil.requestWithFormDataByPostToEntity(this.LOGIN, formData, ResponseData);
     }
 
+    set BASE_URL(value: string) {
+        this._BASE_URL = value;
+        this.LOGIN = this._BASE_URL + "/auth/login";
+        this.REFRESH = this._BASE_URL + "/auth/refresh"
+    }
 
 }

@@ -4,10 +4,12 @@ import {GenUtil} from "../../util/GenUtil";
 
 export class AuthClientController {
 
+    private _BASE_URL: string;
     private readonly authClientService: AuthClientService;
 
-    public constructor() {
-        this.authClientService = new AuthClientService();
+    public constructor(baseUrl: string) {
+        this._BASE_URL = baseUrl;
+        this.authClientService = new AuthClientService(baseUrl);
     }
 
     public refresh(refreshToken: string, acquireName?: boolean): Promise<ResponseData | Error> {
@@ -21,4 +23,12 @@ export class AuthClientController {
         );
     }
 
+    get BASE_URL(): string {
+        return this._BASE_URL;
+    }
+
+    set BASE_URL(value: string) {
+        this._BASE_URL = value;
+        this.authClientService.BASE_URL = value;
+    }
 }

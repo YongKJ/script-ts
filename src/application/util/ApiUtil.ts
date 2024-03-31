@@ -11,6 +11,7 @@ export class ApiUtil {
     private constructor() {
     }
 
+    private static _accessToken = "";
     private static readonly restTemplate = ApiUtil.getResTemplate();
 
     private static getResTemplate(): AxiosInstance {
@@ -53,6 +54,59 @@ export class ApiUtil {
         });
     }
 
+    public static async requestWithFileAndTokenByPostToEntity<T>(api: string, formData: FormData, clazz: new () => T): Promise<T | Error> {
+        let url = this.getUrl(api, new Map<string, any>());
+        let config = <AxiosRequestConfig>GenUtil.mapToRecord(this.getFormDataConfigWithToken(this._accessToken));
+        return await new Promise(resolve => {
+            this.restTemplate.post(url, formData, config)
+                .then(res => {
+                    resolve(<T>DataUtil.convertData(res.data, clazz));
+                })
+                .catch(err => {
+                    resolve(err);
+                });
+        });
+    }
+
+    public static requestWithParamsAndTokenByGetToEntity<T>(api: string, params: Map<string, any>, clazz: new () => T): Promise<T | Error> {
+        let url = this.getUrl(api, params);
+        let config = <AxiosRequestConfig>GenUtil.mapToRecord(this.getHeaderWithToken(this._accessToken));
+        return new Promise(resolve => {
+            this.restTemplate.get(url, config)
+                .then(res => {
+                    resolve(<T>DataUtil.convertData(res.data, clazz));
+                })
+                .catch(err => {
+                    resolve(err);
+                });
+        });
+    }
+
+    private static getFormDataConfigWithToken(accessToken: string | null): Map<string, any> {
+        let header: Record<string, any> = {};
+        header['Content-Type'] = 'multipart/form-data;charset=utf-8';
+        if (accessToken != null) {
+            GenUtil.recAddAll(header, this.getTokenInfo(accessToken));
+        }
+        return this.getMapConfig(header);
+    }
+
+    private static getHeaderWithToken(accessToken: string | null): Map<string, any> {
+        let header: Record<string, any> = {};
+        if (accessToken != null) {
+            GenUtil.recAddAll(header, this.getTokenInfo(accessToken));
+        }
+        return this.getMapConfig(header);
+    }
+
+    private static getTokenInfo(accessToken: string | null): Record<string, any> {
+        let recToken: Record<string, any> = {};
+        if (accessToken != null) {
+            recToken['Authorization'] = 'Bearer ' + accessToken;
+        }
+        return recToken;
+    }
+
     private static getFormConfig(): Map<string, any> {
         let header: Record<string, any> = {};
         header['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -74,6 +128,10 @@ export class ApiUtil {
         url += params.size === 0 ? "" : "?" + qs.stringify(GenUtil.mapToRecord(params));
         LogUtil.loggerLine(Log.of("ApiUtil", "getUrl", "url", url));
         return url;
+    }
+
+    static set accessToken(value: string) {
+        this._accessToken = value;
     }
 
 }

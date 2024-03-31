@@ -1,6 +1,6 @@
 import {GiteaService} from "../service/GiteaService";
 import {Repository} from "gitea-js";
-import {Global} from "../../../api/config/Global";
+import {Global} from "../config/Global";
 
 export class GiteaController {
 

@@ -11,7 +11,7 @@ import {Log} from "../../pojo/dto/Log";
 import PathUtil from "path";
 import * as DateTimeUtil from "date-fns";
 import {TerminalMessage} from "../../api/pojo/dto/TerminalMessage";
-import {ServerUtil} from "../../api/util/ServerUtil";
+import {UpgradeClientController} from "../../api/controller/UpgradeClientController";
 
 export class HexoBlogBuild {
 
@@ -21,10 +21,12 @@ export class HexoBlogBuild {
     private readonly blogBuild: BlogBuild;
     private giteaController: GiteaController;
     private readonly nameFilters: Array<string>;
+    private readonly upgradeClientController: UpgradeClientController;
 
     private constructor() {
         let path = GenUtil.getValue("project-path");
         this.nameFilters = Array.of(".git", ".gitignore", "LICENSE", "README.md");
+        this.upgradeClientController = new UpgradeClientController();
         this.blogBuild = BlogBuild.get(GenUtil.anyToStr(path));
         this.giteaController = new GiteaController();
         this.beginTime = +new Date();
@@ -133,7 +135,7 @@ export class HexoBlogBuild {
     }
 
     private async remoteServerPull(): Promise<void> {
-        ServerUtil.sendMessage(TerminalMessage.of(
+        this.upgradeClientController.sendMessage(TerminalMessage.of(
             "", {
                 cmd: GenUtil.getEnCode(
                     "cd /var/www/localhost/application/blog\n" +
