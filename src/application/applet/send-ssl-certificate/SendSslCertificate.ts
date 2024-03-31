@@ -4,6 +4,7 @@ import {Global} from "../../api/config/Global";
 import * as ssh2 from "ssh2";
 import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
+import {RemoteUtil} from "../../util/RemoteUtil";
 
 export class SendSslCertificate {
 
@@ -20,6 +21,9 @@ export class SendSslCertificate {
     }
 
     private async apply(): Promise<void> {
+        RemoteUtil.execLocalCmd(
+            "update-certificate.sh"
+        );
         await this.sendCertificate();
         this.restart().then();
     }
