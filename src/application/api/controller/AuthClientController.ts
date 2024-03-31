@@ -1,6 +1,6 @@
 import {AuthClientService} from "../service/AuthClientService";
 import {ResponseData} from "../pojo/dto/ResponseData";
-import {GenUtil} from "../../../util/GenUtil";
+import {GenUtil} from "../../util/GenUtil";
 
 export class AuthClientController {
 

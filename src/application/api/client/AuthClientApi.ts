@@ -1,18 +1,18 @@
 import {AuthClientController} from "../controller/AuthClientController";
 import {Global} from "../config/Global";
 import {AxiosError} from "axios";
-import {LogUtil} from "../../../util/LogUtil";
-import {Log} from "../../../pojo/dto/Log";
-import {MsgUtil} from "../util/MsgUtil";
+import {LogUtil} from "../../util/LogUtil";
+import {Log} from "../../pojo/dto/Log";
+import {MsgUtil} from "../../util/MsgUtil";
 
 export class AuthClientApi {
 
     private timer: NodeJS.Timer;
     private _accessToken: string;
     private refreshToken: string;
-    private taskFunc: () => void;
     private readonly userName: string;
     private readonly password: string;
+    private readonly taskFunc: () => void;
     private readonly authClientController: AuthClientController;
 
     public constructor(taskFunc: () => void) {

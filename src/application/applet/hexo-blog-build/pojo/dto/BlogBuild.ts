@@ -1,6 +1,6 @@
 import {FileUtil} from "../../../../util/FileUtil";
 import path from "path";
-import {Global} from "../../config/Global";
+import {Global} from "../../../../api/config/Global";
 
 export class BlogBuild {
 

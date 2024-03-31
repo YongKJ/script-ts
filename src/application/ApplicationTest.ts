@@ -4,6 +4,7 @@ import {WhalesWebBuild} from "./applet/whales-web-build/WhalesWebBuild";
 import {HexoBlogBuild} from "./applet/hexo-blog-build/HexoBlogBuild";
 import {ExceljsTest} from "./applet/exceljs-test/ExceljsTest";
 import {PuppeteerTest} from "./applet/puppeteer-test/PuppeteerTest";
+import {SendSslCertificate} from "./applet/send-ssl-certificate/SendSslCertificate";
 
 export class ApplicationTest {
 
@@ -16,7 +17,8 @@ export class ApplicationTest {
         // BuildScriptService.run();
         // HexoBlogBuild.run();
         // WhalesWebBuild.run();
-        Demo.run();
+        // Demo.run();
+        SendSslCertificate.run();
     }
 
 }

@@ -1,7 +1,7 @@
 import {Global} from "../config/Global";
 import {ResponseData} from "../pojo/dto/ResponseData";
-import {ApiUtil} from "../../../util/ApiUtil";
 import FormData from "form-data";
+import {ApiUtil} from "../../util/ApiUtil";
 
 export class AuthClientService {
 

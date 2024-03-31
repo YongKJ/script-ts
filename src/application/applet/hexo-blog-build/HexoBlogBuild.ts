@@ -1,7 +1,5 @@
 import simpleGit, {SimpleGit} from "simple-git";
 import {Repository} from "gitea-js";
-import {AuthClientApi} from "./api/AuthClientApi";
-import {MsgUtil} from "./util/MsgUtil";
 import {BlogBuild} from "./pojo/dto/BlogBuild";
 import {GenUtil} from "../../util/GenUtil";
 import {RemoteUtil} from "../../util/RemoteUtil";
@@ -11,11 +9,13 @@ import {FileUtil} from "../../util/FileUtil";
 import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
 import PathUtil from "path";
-import {Global} from "./config/Global";
-import {TerminalMessage} from "./pojo/dto/TerminalMessage";
-import {Terminal} from "./pojo/dto/Terminal";
+import {Global} from "../../api/config/Global";
 import * as DateTimeUtil from "date-fns";
 import autobind from "autobind-decorator";
+import {Terminal} from "../../api/pojo/dto/Terminal";
+import {AuthClientApi} from "../../api/client/AuthClientApi";
+import {TerminalMessage} from "../../api/pojo/dto/TerminalMessage";
+import {MsgUtil} from "../../util/MsgUtil";
 
 export class HexoBlogBuild {
 
