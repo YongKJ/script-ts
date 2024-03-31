@@ -9,35 +9,24 @@ import {FileUtil} from "../../util/FileUtil";
 import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
 import PathUtil from "path";
-import {Global} from "../../api/config/Global";
 import * as DateTimeUtil from "date-fns";
-import autobind from "autobind-decorator";
-import {Terminal} from "../../api/pojo/dto/Terminal";
-import {AuthClientApi} from "../../api/client/AuthClientApi";
 import {TerminalMessage} from "../../api/pojo/dto/TerminalMessage";
-import {MsgUtil} from "../../util/MsgUtil";
+import {ServerUtil} from "../../api/util/ServerUtil";
 
 export class HexoBlogBuild {
 
     private git: SimpleGit;
-    private msgUtil!: MsgUtil;
     private repo!: Repository;
-    private terminal: Terminal;
     private readonly beginTime: number;
-    private lstTerminal: Array<Terminal>;
     private readonly blogBuild: BlogBuild;
     private giteaController: GiteaController;
     private readonly nameFilters: Array<string>;
-    private readonly authClientApi: AuthClientApi;
 
     private constructor() {
         let path = GenUtil.getValue("project-path");
         this.nameFilters = Array.of(".git", ".gitignore", "LICENSE", "README.md");
-        this.authClientApi = new AuthClientApi(this.setMsgUtil);
         this.blogBuild = BlogBuild.get(GenUtil.anyToStr(path));
         this.giteaController = new GiteaController();
-        this.lstTerminal = new Array<Terminal>();
-        this.terminal = new Terminal();
         this.beginTime = +new Date();
         this.git = simpleGit();
     }
@@ -52,19 +41,6 @@ export class HexoBlogBuild {
         await this.checkHexoBlogDist();
         await this.updateHexoBlogDist();
         await this.remoteServerPull();
-    }
-
-    @autobind
-    public async setMsgUtil(): Promise<void> {
-        this.msgUtil = new MsgUtil(Global.API_BASE_URL, "/terminal");
-        await GenUtil.sleep(333);
-        this.msgUtil.initClient();
-        this.msgUtil.subscribeMessage("execute", this.handleMessage);
-        this.msgUtil.subscribeMessage("exception", this.handleException);
-        await GenUtil.sleep(333);
-        this.sendMessage(TerminalMessage.of(
-            "", {}, [], "create"
-        ));
     }
 
     private async checkHexoBlogDist(): Promise<void> {
@@ -127,48 +103,6 @@ export class HexoBlogBuild {
         await this.git.push(["-f", "origin", "master"]);
     }
 
-    private handleException(data: Record<string, any>): void {
-        if (data.message === "Forbidden resource") {
-            this.msgUtil.finishSubscribe("execute");
-            this.msgUtil.finishSubscribe("exception");
-            this.msgUtil.closeMsgClient();
-            this.msgUtil.updateToken();
-            this.msgUtil.initClient();
-            this.msgUtil.subscribeMessage("execute", this.handleMessage);
-            this.msgUtil.subscribeMessage("exception", this.handleException);
-        }
-    }
-
-    @autobind
-    private handleMessage(msg: TerminalMessage): void {
-        switch (msg.type) {
-            case "check":
-                this.lstTerminal = msg.terminalList;
-                break;
-            case "create":
-                this.lstTerminal = msg.terminalList;
-                this.terminal = this.lstTerminal[this.lstTerminal.length - 1];
-                break;
-            case "init":
-                if (msg.terminalId === this.terminal.id && typeof msg.param.data !== "undefined") {
-                    console.log(msg.param.data);
-                }
-                break;
-            case "exec":
-                if (msg.terminalId === this.terminal.id && typeof msg.param.data !== "undefined") {
-                    console.log(msg.param.data);
-                }
-                break;
-            case "exit":
-                this.lstTerminal = msg.terminalList;
-                this.closeConnection();
-        }
-    }
-
-    private sendMessage(msg: TerminalMessage): void {
-        this.msgUtil.sendMessage("execute", GenUtil.objToRecord(msg));
-    }
-
     private async updateGiteaRepo(): Promise<void> {
         let createDate = <Date>GenUtil.strToDate(<string>this.repo.created_at, undefined, true);
         if (DateTimeUtil.isAfter(DateTimeUtil.addDays(createDate, 1), Date.now())) return;
@@ -199,22 +133,16 @@ export class HexoBlogBuild {
     }
 
     private async remoteServerPull(): Promise<void> {
-        this.sendMessage(TerminalMessage.of(
-            this.terminal.id, {cmd: GenUtil.getEnCode(
+        ServerUtil.sendMessage(TerminalMessage.of(
+            "", {
+                cmd: GenUtil.getEnCode(
                     "cd /var/www/localhost/application/blog\n" +
                     "rm -rf public\n" +
                     "git clone " + this.repo.clone_url + "\n" +
                     "mv hexo-blog-dist public\n" +
                     "exit\n"
-                )}, [], "exec"));
-    }
-
-    public closeConnection(): void {
-        this.authClientApi.closeClient();
-        this.msgUtil.finishSubscribe("execute");
-        this.msgUtil.finishSubscribe("exception");
-        this.msgUtil.closeMsgClient();
-        this.countTime().then();
+                )
+            }, [], "exec"), this.countTime);
     }
 
     public static run(): void {
