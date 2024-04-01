@@ -1,0 +1,8 @@
+server:
+  host: "47.107.122.89"
+  port: 31122
+  username: "root"
+  password: "*Dxj1003746818"
+
+certificate: "C:\\Users\\admin\\Desktop\\ssl\\yongkj.cn.pem"
+private-key: "C:\\Users\\admin\\Desktop\\ssl\\yongkj.cn.key"

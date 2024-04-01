@@ -1,29 +1,33 @@
 import {AuthClientController} from "../controller/AuthClientController";
 import {Global} from "../config/Global";
 import {AxiosError} from "axios";
-import {LogUtil} from "../../../util/LogUtil";
-import {Log} from "../../../pojo/dto/Log";
-import {MsgUtil} from "../util/MsgUtil";
+import {LogUtil} from "../../util/LogUtil";
+import {Log} from "../../pojo/dto/Log";
+import {MsgUtil} from "../../util/MsgUtil";
+import {ApiUtil} from "../../util/ApiUtil";
 
 export class AuthClientApi {
 
     private timer: NodeJS.Timer;
+    private taskFunc: () => void;
     private _accessToken: string;
     private refreshToken: string;
-    private taskFunc: () => void;
     private readonly userName: string;
     private readonly password: string;
     private readonly authClientController: AuthClientController;
 
-    public constructor(taskFunc: () => void) {
+    public constructor(baseUrl: string, taskFunc: () => void) {
         this._accessToken = "";
         this.refreshToken = "";
         this.taskFunc = taskFunc;
-        this.userName = Global.API_USER_NAME;
         this.password = Global.API_PASSWORD;
+        this.userName = Global.API_USER_NAME;
         this.timer = setInterval(() => {}, 60 * 1000);
-        this.authClientController = new AuthClientController();
-        this.login().then();
+        this.authClientController = new AuthClientController(baseUrl);
+
+        if (baseUrl.length > 0) {
+            this.login().then();
+        }
     }
 
     public closeClient(): void {
@@ -48,6 +52,7 @@ export class AuthClientApi {
         clearInterval(this.timer);
         this._accessToken = data.access_token;
         this.refreshToken = data.refresh_token;
+        ApiUtil.accessToken = this._accessToken;
         MsgUtil.accessToken = this._accessToken;
         this.taskFunc();
         this.timer = setInterval(
@@ -72,9 +77,17 @@ export class AuthClientApi {
             }
             let data: Record<string, any> = responseData.data;
             authClientApi._accessToken = data.access_token;
+            ApiUtil.accessToken = authClientApi._accessToken;
             MsgUtil.accessToken = authClientApi._accessToken;
             LogUtil.loggerLine(Log.of("AuthClientApi", "getAccessToken", "message", "验证 token 刷新成功！"));
         }
     }
 
+    public async setBaseUrl(value: string, taskFunc: () => void): Promise<void> {
+        let flag = value === this.authClientController.BASE_URL;
+        this.authClientController.BASE_URL = value;
+        this.taskFunc = taskFunc;
+        if (flag) return;
+        await this.login();
+    }
 }

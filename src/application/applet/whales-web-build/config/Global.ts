@@ -1,12 +1,16 @@
 
 export class Global {
 
-    private static readonly _SERVER_HOST = "";
-    private static readonly _SERVER_PORT = 0;
-    private static readonly _SERVER_USERNAME = "";
-    private static readonly _SERVER_PASSWORD = "";
-    private static readonly _GITEA_BASE_URL = "";
-    private static readonly _GITEA_AUTH_TOKEN = "";
+    // private static readonly _SERVER_HOST = "45.157.131.82";
+    // private static readonly _SERVER_PORT = 31579;
+    // private static readonly _SERVER_USERNAME = "root";
+    // private static readonly _SERVER_PASSWORD = "IASoda23iODe2KFA";
+    private static readonly _SERVER_HOST = "124.222.85.139";
+    private static readonly _SERVER_PORT = 31987;
+    private static readonly _SERVER_USERNAME = "root";
+    private static readonly _SERVER_PASSWORD = "SIO2.TOz9iyr@35A#XCq";
+    private static readonly _GITEA_BASE_URL = "http://124.222.85.139:3000";
+    private static readonly _GITEA_AUTH_TOKEN = "5b28d9c5943c98eef9d1eeb203168f21f3b37c8e";
 
     static get SERVER_HOST(): string {
         return this._SERVER_HOST;

@@ -1,5 +1,5 @@
 import {Terminal} from "./Terminal";
-import {DataUtil} from "../../../../util/DataUtil";
+import {DataUtil} from "../../../util/DataUtil";
 
 export class TerminalMessage {
 

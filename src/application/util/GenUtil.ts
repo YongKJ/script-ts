@@ -133,6 +133,12 @@ export class GenUtil {
         return recData;
     }
 
+    public static recAddAll(recOldData: Record<string, any>, recNewData: Record<string, any>): void {
+        for (let key of Object.keys(recNewData)) {
+            recOldData[key] = recNewData[key];
+        }
+    }
+
     public static sleep(waitTimeInMs: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, waitTimeInMs));
     }
