@@ -2,6 +2,7 @@ import {GenUtil} from "../../util/GenUtil";
 import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
 import {FileUtil} from "../../util/FileUtil";
+import {createConnection, createLongLivedTokenAuth, subscribeEntities} from "home-assistant-js-websocket";
 
 export class Demo {
 
@@ -206,6 +207,16 @@ export class Demo {
             ".*\"build:dev\".*\"(.*)\"",
             "vite build --mode dev"
         )
+    }
+
+    private async test14(): Promise<void> {
+        const auth = createLongLivedTokenAuth(
+            "http://localhost:8123",
+            "YOUR ACCESS TOKEN",
+        );
+
+        const connection = await createConnection({ auth });
+        subscribeEntities(connection, (entities) => console.log(entities));
     }
 
     public static run(): void {
