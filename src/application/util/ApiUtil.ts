@@ -21,6 +21,19 @@ export class ApiUtil {
         });
     }
 
+    public static requestWithParamsByGet(api: string, params: Map<string, any>): Promise<any | Error> {
+        let url = this.getUrl(api, params);
+        return new Promise(resolve => {
+            this.restTemplate.get(url)
+                .then(res => {
+                    resolve(res.data);
+                })
+                .catch(err => {
+                    resolve(err);
+                });
+        });
+    }
+
     public static requestWithParamsByGetAndAuth(api: string, auth: AxiosBasicCredentials, params: Map<string, any>): Promise<string | Error> {
         let url = this.getUrl(api, params);
         return new Promise<string | Error>(resolve => {
