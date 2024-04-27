@@ -2,6 +2,7 @@ import {GenUtil} from "../../util/GenUtil";
 import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
 import {FileUtil} from "../../util/FileUtil";
+import {createConnection, createLongLivedTokenAuth, subscribeEntities} from "home-assistant-js-websocket";
 import {MsgUtil} from "../../util/MsgUtil";
 import {v2 as webdav} from "webdav-server";
 
@@ -210,7 +211,70 @@ export class Demo {
         )
     }
 
-    private test14(): void {
+    private async test14(): Promise<void> {
+        const auth = createLongLivedTokenAuth(
+            "http://localhost:8123",
+            "YOUR ACCESS TOKEN",
+        );
+
+        const connection = await createConnection({ auth });
+        subscribeEntities(connection, (entities) => console.log(entities));
+    }
+
+    private async test15(): Promise<void> {
+        let responseData = FileUtil.read("C:\\Users\\Admin\\Desktop\\responseData.txt");
+        let lstUrl = Buffer.from(responseData, "base64").toString().split("\n");
+        LogUtil.loggerLine(Log.of("Demo", "test15", "lstUrl", lstUrl));
+        for (let url of lstUrl) {
+            LogUtil.loggerLine(Log.of("Demo", "test15", "url", url));
+            let srcConfigData = url.split("\/\/")[1];
+            if (srcConfigData.includes("#")) {
+                srcConfigData = srcConfigData.split("#")[0];
+            }
+            LogUtil.loggerLine(Log.of("Demo", "test15", "srcConfigData", srcConfigData));
+            let desConfigData = Demo.getDesConfigData(srcConfigData, url);
+            LogUtil.loggerLine(Log.of("Demo", "test15", "desConfigData", desConfigData));
+            let newUrl = url.replace(srcConfigData, desConfigData);
+            LogUtil.loggerLine(Log.of("Demo", "test15", "newUrl", newUrl));
+            console.log("----------------------------------------------------------------------------------------------")
+        }
+        let urlStr = lstUrl.join("\n");
+        let data = Buffer.from(urlStr).toString("base64");
+        LogUtil.loggerLine(Log.of("Demo", "test15", "urlStr", urlStr));
+        LogUtil.loggerLine(Log.of("Demo", "test15", "data", data));
+    }
+
+    private static getDesConfigData(srcConfigData: string, url: string): string {
+        let oldConfigData = Buffer.from(srcConfigData, "base64").toString();
+        let hostData = Demo.getHostData(oldConfigData, url);
+
+        LogUtil.loggerLine(Log.of("Demo", "getDesConfigData", "oldConfigData", oldConfigData));
+        LogUtil.loggerLine(Log.of("Demo", "getDesConfigData", "hostData", hostData));
+
+        let newConfigData = "";
+        if (oldConfigData.startsWith("{") && oldConfigData.endsWith("}")) {
+            let configObj = GenUtil.strToRecord(oldConfigData);
+            configObj["add"] = hostData.split(":")[0];
+            newConfigData = GenUtil.recToStr(configObj);
+        } else {
+            let tempConfigData = oldConfigData.split("@")[0];
+            newConfigData = tempConfigData + "@" + hostData;
+        }
+        LogUtil.loggerLine(Log.of("Demo", "getDesConfigData", "newConfigData", newConfigData));
+        return Buffer.from(newConfigData).toString("base64");
+    }
+
+    private static getHostData(configData: string, url: string): string {
+        if (configData.startsWith("{") && configData.endsWith("}")) {
+            let configObj = GenUtil.strToRecord(configData);
+            return configObj.ps.split("@")[1];
+        } else {
+            let desc = url.split("#")[1];
+            return desc.split("@")[1];
+        }
+    }
+
+    private test15(): void {
         let msgUtil = new MsgUtil("http://localhost:7799", "/chat")
         msgUtil.subscribeMessage("msg", data => {
             LogUtil.logger(Log.of("Demo", "test14", "data", data));
@@ -218,7 +282,7 @@ export class Demo {
         msgUtil.sendMessage("msg", "Hello world!")
     }
 
-    private test15(): void {
+    private test16(): void {
         const userManager = new webdav.SimpleUserManager();
         const user = userManager.addUser('yongkj', '*Dxj1003746818', false);
 
@@ -236,7 +300,8 @@ export class Demo {
 
     public static run(): void {
         let demo = new Demo();
-        demo.test15();
+        demo.test16();
+        // demo.test15();
         // demo.test14();
         // demo.test13();
         // demo.test12();

@@ -13,8 +13,8 @@ export class EncodeAndDecode {
         // this.decode().then();
         // this.decode1();
         // this.decode2();
-        // this.decode3();
-        this.decode4();
+        this.decode3();
+        // this.decode4();
         // this.decode5();
     }
 
@@ -86,15 +86,15 @@ export class EncodeAndDecode {
     }
 
     private decode3(): void {
-        let content = "Hello world!";
+        let content = "Hello world!------------------------------------------------------2323233333333333333332412412141dfgsfdhgfghjgjytjfgdsfgsdfgadfgasdfasfasdfasd";
         let base64Iv = "V1lhZjI2b3c3WTlmWjFpeg==";
         let base64Key = "Ep0U1U2zm7vfA1UZ03m2+E1pU/ugLEZ33tO1ui7rT2s=";
-        let base64Content = "FbcG8w9oKVTfvxdt6j74vA==";
+        // let base64Content = "FbcG8w9oKVTfvxdt6j74vA==";
 
         let encryptStr = this.encrypt(content, base64Key, base64Iv);
         LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "encryptStr", encryptStr));
-        let decryptStr = this.decrypt(base64Content, base64Key, base64Iv);
-        LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "decryptStr", decryptStr));
+        // let decryptStr = this.decrypt(base64Content, base64Key, base64Iv);
+        // LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "decryptStr", decryptStr));
     }
 
     private decode4(): void {

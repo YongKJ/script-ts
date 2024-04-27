@@ -17,6 +17,7 @@
     "exceljs": "^4.3.0",
     "form-data": "^4.0.0",
     "gitea-js": "1.16.2",
+    "home-assistant-js-websocket": "^9.2.1",
     "js-crypto-rsa": "^1.0.7",
     "jsencrypt": "^3.3.2",
     "node-rsa": "^1.1.1",
