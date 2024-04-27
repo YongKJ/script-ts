@@ -2,6 +2,8 @@ import {GenUtil} from "../../util/GenUtil";
 import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
 import {FileUtil} from "../../util/FileUtil";
+import {MsgUtil} from "../../util/MsgUtil";
+import {v2 as webdav} from "webdav-server";
 
 export class Demo {
 
@@ -208,11 +210,37 @@ export class Demo {
         )
     }
 
+    private test14(): void {
+        let msgUtil = new MsgUtil("http://localhost:7799", "/chat")
+        msgUtil.subscribeMessage("msg", data => {
+            LogUtil.logger(Log.of("Demo", "test14", "data", data));
+        })
+        msgUtil.sendMessage("msg", "Hello world!")
+    }
+
+    private test15(): void {
+        const userManager = new webdav.SimpleUserManager();
+        const user = userManager.addUser('yongkj', '*Dxj1003746818', false);
+
+        const privilegeManager = new webdav.SimplePathPrivilegeManager();
+        privilegeManager.setRights(user, '/', ['all']);
+
+        const server = new webdav.WebDAVServer({
+            httpAuthentication: new webdav.HTTPDigestAuthentication(userManager, 'Default realm'),
+            privilegeManager: privilegeManager,
+            port: 6699
+        });
+
+        server.start(() => console.log('READY'));
+    }
+
     public static run(): void {
         let demo = new Demo();
+        demo.test15();
+        // demo.test14();
         // demo.test13();
         // demo.test12();
-        demo.test11();
+        // demo.test11();
         // demo.test10();
         // demo.test9();
         // demo.test8();
