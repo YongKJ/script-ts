@@ -5,6 +5,7 @@ import {FileUtil} from "../../util/FileUtil";
 import {createConnection, createLongLivedTokenAuth, subscribeEntities} from "home-assistant-js-websocket";
 import {MsgUtil} from "../../util/MsgUtil";
 import {v2 as webdav} from "webdav-server";
+import {ExcelUtil} from "../../util/ExcelUtil";
 
 export class Demo {
 
@@ -217,7 +218,7 @@ export class Demo {
             "YOUR ACCESS TOKEN",
         );
 
-        const connection = await createConnection({ auth });
+        const connection = await createConnection({auth});
         subscribeEntities(connection, (entities) => console.log(entities));
     }
 
@@ -274,7 +275,7 @@ export class Demo {
         }
     }
 
-    private test15(): void {
+    private test16(): void {
         let msgUtil = new MsgUtil("http://localhost:7799", "/chat")
         msgUtil.subscribeMessage("msg", data => {
             LogUtil.logger(Log.of("Demo", "test14", "data", data));
@@ -282,7 +283,7 @@ export class Demo {
         msgUtil.sendMessage("msg", "Hello world!")
     }
 
-    private test16(): void {
+    private test17(): void {
         const userManager = new webdav.SimpleUserManager();
         const user = userManager.addUser('yongkj', '*Dxj1003746818', false);
 
@@ -298,9 +299,69 @@ export class Demo {
         server.start(() => console.log('READY'));
     }
 
+    private test18(): void {
+        let refreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWZyZXNoU3RyIjoiQ3JCQ0RVRk1GVUZZRFlCS1lCeUJEQTFyQVlzQU5vZ0ZZQ3kyMkFqZ0ZvQmUyQThzUUtMUUFNK2lBNG91TnVPTUNqcG84ZUFNekErYUFJb3NBak5tUXNBdkVBIiwiaWF0IjoxNzE2NzA1MjQ1LCJleHAiOjE3MTY3OTE2NDV9.U-Sh4qpj6VuclH_d3GHfHczXdivrGXgX-9lhNWkGaQ4";
+        LogUtil.loggerLine(Log.of("Demo", "test17", "GenUtil.getEnCode(refreshToken)", GenUtil.getEnCode(refreshToken)));
+    }
+
+    private async test19(): Promise<void> {
+        let lstData = await ExcelUtil.toMap(
+            "C:\\Users\\admin\\Desktop\\角度整合.xlsx",
+            "paixu_da12xiao54_heng", 2
+        );
+        let mapData = new Map<string, Array<Record<string, any>>>();
+        for (let data of lstData) {
+            let index = 0;
+            let indexStr = "0";
+            for (let [key, value] of data) {
+                if (key === "数据组") {
+                    index = GenUtil.strToNumber(value);
+                    indexStr = value;
+                    continue;
+                }
+                let fields = key.split("-");
+                if (!mapData.has(fields[0])) {
+                    mapData.set(fields[0], new Array<Record<string, any>>());
+                }
+                if (mapData.get(fields[0])?.length === index) {
+                    mapData.get(fields[0])?.push({index: index});
+                }
+
+                let objKey = "value";
+                switch (fields[1]) {
+                    case "平均值":
+                        objKey = "avgValue";
+                        break
+                    case "最大值":
+                        objKey = "maxValue";
+                        break
+                    case "最小值":
+                        objKey = "minValue";
+                        break
+                    case "实际值":
+                        objKey = "realValue";
+                        break
+                    default:
+                        break;
+                }
+
+                (<Array<Record<string, any>>>mapData.get(fields[0]))[index][objKey] = value;
+            }
+        }
+        // LogUtil.loggerLine(Log.of("Demo", "test19", "lstData", lstData));
+        LogUtil.loggerLine(Log.of("Demo", "test19", "mapData.keys()", mapData.keys()));
+        FileUtil.write(
+            "C:\\Users\\admin\\Desktop\\角度整合.json",
+            GenUtil.recToStr(GenUtil.mapToRecord(mapData))
+        );
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test16();
+        demo.test19().then();
+        // demo.test18();
+        // demo.test17();
+        // demo.test16();
         // demo.test15();
         // demo.test14();
         // demo.test13();
