@@ -368,7 +368,9 @@ export class Demo {
 
         let lstData = new Array<Record<string, any>>();
         for (let [key, statisticsData] of mapData) {
-            lstData.push(GenUtil.objToRecord(statisticsData));
+            for (let data of statisticsData) {
+                lstData.push(GenUtil.objToRecord(data));
+            }
         }
         FileUtil.write(
             "C:\\Users\\admin\\Desktop\\角度整合plus.json",
@@ -393,11 +395,13 @@ export class Demo {
                 let positionType = fields[0];
                 let valueType = fields[2];
 
+                let positionId = EnumUtil.getStatisticsPositionId(positionType);
+                let perspectiveId = EnumUtil.getStatisticsPerspectiveId(perspectiveType);
                 if (!mapLabel.has(positionType)) {
                     let labelData = <Record<string, any>>{};
                     labelData.perspectives = new Array<Record<string, any>>();
                     labelData.name = positionType;
-                    labelData.id = mapData.size;
+                    labelData.id = positionId;
 
                     mapLabel.set(positionType, labelData);
                 }
@@ -405,7 +409,6 @@ export class Demo {
                 let perspective = (<Record<string, any>>mapLabel.get(positionType))
                     .perspectives.find((po: Record<string, any>) => po.name === perspectiveType);
                 if (typeof perspective === "undefined") {
-                    let perspectiveId = EnumUtil.getStatisticsPositionId(perspectiveType);
                     (<Record<string, any>>mapLabel.get(positionType)).perspectives.push({
                         id: perspectiveId,
                         name: perspectiveType
@@ -420,8 +423,6 @@ export class Demo {
                 if (mapData.get(mapKey)?.length === index) {
                     let statistics = new Statistics();
                     let genId = new SnowflakeIdv1({workerId: 1});
-                    let positionId = EnumUtil.getStatisticsPositionId(positionType);
-                    let perspectiveId = EnumUtil.getStatisticsPerspectiveId(perspectiveType);
 
                     statistics.xData = index;
                     statistics.workerId = workerId;
@@ -436,6 +437,8 @@ export class Demo {
                 (<Array<Statistics>>mapData.get(mapKey))[index].yData[valueField] = value;
             }
         }
+
+        LogUtil.loggerLine(Log.of("Demo", "test20", "mapLabel", mapLabel));
 
         return mapData;
     }
