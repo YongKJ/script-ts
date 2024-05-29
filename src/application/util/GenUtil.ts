@@ -98,6 +98,10 @@ export class GenUtil {
         return mapData;
     }
 
+    public static arrayToStr<T>(lstData: Array<T>): string {
+        return JSON.stringify(lstData);
+    }
+
     public static recToStr(record: Record<string, any> | Array<Record<string, any>>, pretty?: boolean): string {
         return typeof pretty === "undefined" ? JSON.stringify(record) : JSON.stringify(record, null, 2);
     }

@@ -6,6 +6,9 @@ import {createConnection, createLongLivedTokenAuth, subscribeEntities} from "hom
 import {MsgUtil} from "../../util/MsgUtil";
 import {v2 as webdav} from "webdav-server";
 import {ExcelUtil} from "../../util/ExcelUtil";
+import {Statistics} from "./pojo/dto/Statistics";
+import {EnumUtil} from "./util/EnumUtil";
+import {SnowflakeIdv1} from "simple-flakeid";
 
 export class Demo {
 
@@ -356,9 +359,91 @@ export class Demo {
         );
     }
 
+    private async test20(): Promise<void> {
+        let fileName = "C:\\Users\\admin\\Desktop\\角度整合plus.xlsx";
+        let workerId = 568736985534533;
+        let videoTimestamp = 1679756865086;
+        let sheetData = await ExcelUtil.toMap(fileName, 0);
+        let mapData = await this.getMapSheetData(workerId, videoTimestamp, sheetData);
+
+        let lstData = new Array<Record<string, any>>();
+        for (let [key, statisticsData] of mapData) {
+            lstData.push(GenUtil.objToRecord(statisticsData));
+        }
+        FileUtil.write(
+            "C:\\Users\\admin\\Desktop\\角度整合plus.json",
+            GenUtil.arrayToStr(lstData)
+        );
+    }
+
+    private async getMapSheetData(workerId: number, videoTimestamp: number, sheetData: Array<Map<string, any>>): Promise<Map<string, Array<Statistics>>> {
+        let mapData = new Map<string, Array<Statistics>>;
+        let mapLabel = new Map<string, Record<string, any>>();
+        for (let data of sheetData) {
+            let index = 0;
+            let indexStr = "0";
+            for (let [key, value] of data) {
+                if (key === "编号") {
+                    index = GenUtil.strToNumber(value);
+                    indexStr = value;
+                    continue;
+                }
+                let fields = key.split("-");
+                let perspectiveType = fields[1];
+                let positionType = fields[0];
+                let valueType = fields[2];
+
+                if (!mapLabel.has(positionType)) {
+                    let labelData = <Record<string, any>>{};
+                    labelData.perspectives = new Array<Record<string, any>>();
+                    labelData.name = positionType;
+                    labelData.id = mapData.size;
+
+                    mapLabel.set(positionType, labelData);
+                }
+
+                let perspective = (<Record<string, any>>mapLabel.get(positionType))
+                    .perspectives.find((po: Record<string, any>) => po.name === perspectiveType);
+                if (typeof perspective === "undefined") {
+                    let perspectiveId = EnumUtil.getStatisticsPositionId(perspectiveType);
+                    (<Record<string, any>>mapLabel.get(positionType)).perspectives.push({
+                        id: perspectiveId,
+                        name: perspectiveType
+                    });
+                }
+
+
+                let mapKey = positionType + perspectiveType;
+                if (!mapData.has(mapKey)) {
+                    mapData.set(mapKey, new Array<Statistics>());
+                }
+                if (mapData.get(mapKey)?.length === index) {
+                    let statistics = new Statistics();
+                    let genId = new SnowflakeIdv1({workerId: 1});
+                    let positionId = EnumUtil.getStatisticsPositionId(positionType);
+                    let perspectiveId = EnumUtil.getStatisticsPerspectiveId(perspectiveType);
+
+                    statistics.xData = index;
+                    statistics.workerId = workerId;
+                    statistics.position = positionId;
+                    statistics.id = genId.NextNumber();
+                    statistics.perspective = perspectiveId;
+                    statistics.videoTimestamp = videoTimestamp;
+                    mapData.get(mapKey)?.push(statistics);
+                }
+
+                let valueField = EnumUtil.getValueTypeField(valueType);
+                (<Array<Statistics>>mapData.get(mapKey))[index].yData[valueField] = value;
+            }
+        }
+
+        return mapData;
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test19().then();
+        demo.test20().then();
+        // demo.test19().then();
         // demo.test18();
         // demo.test17();
         // demo.test16();

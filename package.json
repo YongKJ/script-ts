@@ -25,6 +25,7 @@
     "puppeteer-core": "^21.2.1",
     "qs": "^6.11.1",
     "rimraf": "^5.0.0",
+    "simple-flakeid": "^0.0.5",
     "simple-git": "^3.18.0",
     "socket.io-client": "^4.6.1",
     "ssh2": "^1.12.0",
