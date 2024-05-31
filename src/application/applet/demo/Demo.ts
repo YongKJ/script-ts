@@ -443,9 +443,45 @@ export class Demo {
         return mapData;
     }
 
+    private static getStatus(): void {
+        let res = {
+            activityStatus: 0,
+            operationStatus: 0,
+            businessStatus: 0,
+            expirationTime: 0
+        }
+
+        if (res.operationStatus === 2 && res.expirationTime === 0 && res.businessStatus === 1) {
+            console.log("已交保证金");
+        } else if ((res.operationStatus == 2 && res.expirationTime > 0) || res.businessStatus == 2) {
+            console.log("待缴费状态");
+        } else {
+            if (res.operationStatus == 1) {
+                console.log("试运营中");
+            } else if (res.activityStatus == 1) {
+                console.log("活动开始");
+            }
+        }
+    }
+
+    private test21(): void {
+        // let fileName = "D:\\Document\\MyCodes\\Gitea\\api-ts\\src\\application\\module\\CentralModule.ts";
+        // let regStr = "\\s+(\/\/\\s)TreadModule,";
+        // FileUtil.modContent(fileName, regStr, "");
+
+        // let fileName = "D:\\Document\\MyCodes\\Gitea\\api-ts\\src\\application\\module\\CentralModule.ts";
+        // let regStr = "(\\s+)TreadModule,";
+        // FileUtil.modify(fileName, regStr, matchStr => matchStr + "// ");
+
+        let fileName = "D:\\Document\\MyCodes\\Gitea\\api-ts\\src\\application\\config\\Global.ts";
+        let regStr = "\\s+private static readonly _mysqlHost = \"(.*)\"";
+        FileUtil.modContent(fileName, regStr, "pi.yongkj.cn");
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test20().then();
+        demo.test21();
+        // demo.test20().then();
         // demo.test19().then();
         // demo.test18();
         // demo.test17();
