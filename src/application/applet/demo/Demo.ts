@@ -360,7 +360,7 @@ export class Demo {
     }
 
     private async test20(): Promise<void> {
-        let fileName = "C:\\Users\\admin\\Desktop\\角度整合plus.xlsx";
+        let fileName = "C:\\Users\\admin\\Desktop\\角度整合pro.xlsx";
         let workerId = 568736985534533;
         let videoTimestamp = 1679756865086;
         let sheetData = await ExcelUtil.toMap(fileName, 0);
@@ -373,7 +373,7 @@ export class Demo {
             }
         }
         FileUtil.write(
-            "C:\\Users\\admin\\Desktop\\角度整合plus.json",
+            "C:\\Users\\admin\\Desktop\\角度整合pro.json",
             GenUtil.arrayToStr(lstData)
         );
     }
@@ -478,9 +478,18 @@ export class Demo {
         FileUtil.modContent(fileName, regStr, "pi.yongkj.cn");
     }
 
+    public test22(): void {
+        let str = "./node_modules/.pnpm/@nestjs+terminus@10.2.0_@nestjs+common@9.4.3_@nestjs+core@9.4.3_@nestjs+typeorm@9.0.1_reflect_24qmn2wp5k4xizwmv5xu76e4re/node_modules/@nestjs/terminus/dist/utils/types.js.map";
+        let regStr = ".*@nestjs\/terminus\/dist\/utils\/.*\.map";
+        let regex = new RegExp(regStr);
+        let flag = regex.test(str);
+        LogUtil.loggerLine(Log.of("Demo", "test22", "flag", flag));
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test21();
+        demo.test22();
+        // demo.test21();
         // demo.test20().then();
         // demo.test19().then();
         // demo.test18();
