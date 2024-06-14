@@ -489,7 +489,11 @@ export class Demo {
     private test23(): void {
         let fileName = "D:\\Document\\MyCodes\\Gitea\\api-web-vue3\\src\\router\\index.ts";
         let regStr = "redirect:\\s{[\\s\\S]*?name:\\s\"(\\w+)\"[\\s\\S]*?}";
-        FileUtil.modFile(fileName, regStr, "visual");
+        FileUtil.modifyFile(fileName, regStr, (allStr, matchStr) => {
+            LogUtil.loggerLine(Log.of("Demo", "test23", "allStr", allStr));
+            LogUtil.loggerLine(Log.of("Demo", "test23", "matchStr", matchStr));
+            return <string>allStr?.replace(<string>matchStr, "visual");
+        });
     }
 
     public static run(): void {

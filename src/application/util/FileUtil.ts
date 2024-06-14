@@ -135,9 +135,9 @@ export class FileUtil {
         this.modifyFile(path, regStr, () => value, isAll);
     }
 
-    public static modifyFile(path: string, regStr: string, valueFunc: (matchStr?: string) => string, isAll?: boolean): void {
+    public static modifyFile(path: string, regStr: string, valueFunc: (allStr?: string, matchStr?: string) => string, isAll?: boolean): void {
         let regex = isAll ? new RegExp(regStr, "g") : new RegExp(regStr);
-        let content = this.read(path).replace(regex, (allStr,  matchStr) => valueFunc(matchStr));
+        let content = this.read(path).replace(regex, (allStr,  matchStr) => valueFunc(allStr, matchStr));
         this.write(path, content);
     }
 
