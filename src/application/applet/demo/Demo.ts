@@ -486,9 +486,16 @@ export class Demo {
         LogUtil.loggerLine(Log.of("Demo", "test22", "flag", flag));
     }
 
+    private test23(): void {
+        let fileName = "D:\\Document\\MyCodes\\Gitea\\api-web-vue3\\src\\router\\index.ts";
+        let regStr = "redirect:\\s{[\\s\\S]*?name:\\s\"(\\w+)\"[\\s\\S]*?}";
+        FileUtil.modFile(fileName, regStr, "visual");
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test22();
+        demo.test23();
+        // demo.test22();
         // demo.test21();
         // demo.test20().then();
         // demo.test19().then();
