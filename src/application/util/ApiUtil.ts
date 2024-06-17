@@ -34,6 +34,20 @@ export class ApiUtil {
         });
     }
 
+    public static async requestWithUrlByGetAndDownload(url: string, thenFunc: (res: Record<string, any>) => void, catchFunc: (err: any) => void): Promise<void> {
+        await new Promise<void>(resolve => {
+            this.restTemplate.get(url, GenUtil.mapToRecord(this.getDownloadConfig()))
+                .then(res => {
+                    thenFunc(res);
+                    resolve();
+                })
+                .catch(err => {
+                    catchFunc(err);
+                    resolve();
+                });
+        });
+    }
+
     public static requestWithParamsByGetAndAuth(api: string, auth: AxiosBasicCredentials, params: Map<string, any>): Promise<string | Error> {
         let url = this.getUrl(api, params);
         return new Promise<string | Error>(resolve => {
@@ -93,6 +107,15 @@ export class ApiUtil {
                     resolve(err);
                 });
         });
+    }
+
+    private static getDownloadConfig(): Map<string, any> {
+        let header: Record<string, any> = {};
+        header['Content-Type'] = 'multipart/form-data';
+
+        return new Map<string, any>([
+            ["headers", header], ["responseType", "arraybuffer"]
+        ]);
     }
 
     private static getFormDataConfigWithToken(accessToken: string | null): Map<string, any> {

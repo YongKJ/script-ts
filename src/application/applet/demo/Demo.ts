@@ -9,6 +9,9 @@ import {ExcelUtil} from "../../util/ExcelUtil";
 import {Statistics} from "./pojo/dto/Statistics";
 import {EnumUtil} from "./util/EnumUtil";
 import {SnowflakeIdv1} from "simple-flakeid";
+import PathUtil from "path";
+import fs from "fs";
+import {ApiUtil} from "../../util/ApiUtil";
 
 export class Demo {
 
@@ -496,9 +499,50 @@ export class Demo {
         });
     }
 
+    private async test24(): Promise<void> {
+        let version = "1.36.0";
+        let folder = "C:\\Users\\Admin\\Desktop";
+        let cssUrl = `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${version}/umd/doc.css`;
+        let jsUrl = `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${version}/umd/doc.umd.js`;
+
+        let cssFileName = await this.offline(cssUrl, folder);
+        let jsFileName = await this.offline(jsUrl, folder);
+
+        LogUtil.loggerLine(Log.of("Demo", "test24", "cssFileName", cssFileName));
+        LogUtil.loggerLine(Log.of("Demo", "test24", "jsFileName", jsFileName));
+    }
+
+    private async offline(url: string, path: string): Promise<string> {
+        let index = url.lastIndexOf("/");
+        let fileName = url.substring(index + 1);
+        await new Promise<void>(resolve => {
+            ApiUtil.requestWithUrlByGetAndDownload(url, async res => {
+                let content: string = res.headers["content-disposition"];
+                if (typeof content !== "undefined") {
+                    index = content.lastIndexOf("filename=");
+                    fileName = content.substring(index + 9);
+                    let regex = new RegExp("\"(.+)\"");
+                    if (regex.test(fileName)) {
+                        let lstMatch = fileName.match(regex);
+                        if (lstMatch != null) {
+                            fileName = lstMatch[1];
+                        }
+                    }
+                }
+                fileName = path + PathUtil.sep + decodeURIComponent(fileName);
+                await fs.promises.writeFile(fileName, res.data, "binary");
+                resolve();
+            }, err => {
+                LogUtil.loggerLine(Log.of("Demo", "offline", "err", err))
+            });
+        });
+        return fileName;
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test23();
+        demo.test24().then();
+        // demo.test23();
         // demo.test22();
         // demo.test21();
         // demo.test20().then();
