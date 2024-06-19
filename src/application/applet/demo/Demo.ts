@@ -12,6 +12,9 @@ import {SnowflakeIdv1} from "simple-flakeid";
 import PathUtil from "path";
 import fs from "fs";
 import {ApiUtil} from "../../util/ApiUtil";
+import pako from "pako";
+import {AesUtil} from "../../util/AesUtil";
+import {RsaUtil} from "../../util/RsaUtil";
 
 export class Demo {
 
@@ -539,9 +542,65 @@ export class Demo {
         return fileName;
     }
 
+    private test25(): void {
+        let str = "Hello world";
+        // LogUtil.loggerLine(Log.of("Demo", "test25", "outputUnit", pako.deflate(str, {level: 9})))
+        let outputStr = pako.gzip(str);
+        let urlOutPutStr = encodeURIComponent(GenUtil.uint8ArrayToString(outputStr));
+
+        let inputStr = decodeURIComponent(urlOutPutStr)
+        let inputUnit = GenUtil.stringToUint8Array(inputStr)
+        let inputResult = GenUtil.uint8ArrayToString(pako.inflate(inputUnit))
+
+        LogUtil.loggerLine(Log.of("Demo", "test25", "outputStr", outputStr))
+        LogUtil.loggerLine(Log.of("Demo", "test25", "urlOutPutStr", urlOutPutStr))
+        LogUtil.loggerLine(Log.of("Demo", "test25", "inputStr", inputStr))
+        LogUtil.loggerLine(Log.of("Demo", "test25", "inputResult", inputResult))
+
+        let tempInput = "x%9C%F2H%CD%C9%C9W%28%CF%2F%CAI%01%00%00%00%FF%FF%01%00%00%FF%FF%18%AB%04%3D";
+        let tempInputStr = decodeURIComponent(tempInput);
+        let tempInputUnit = GenUtil.stringToUint8Array(tempInputStr);
+        let tempInputResult = pako.inflateRaw(tempInputUnit);
+
+        LogUtil.loggerLine(Log.of("Demo", "test25", "tempInputStr", tempInputStr))
+        LogUtil.loggerLine(Log.of("Demo", "test25", "tempInputResult", tempInputResult))
+    }
+
+    private test26(): void {
+        let str = "Hello world";
+        let iv = AesUtil.generateIV();
+        let key = AesUtil.generateKey();
+
+        let encryptStr = AesUtil.aesEncrypt(key, iv, str);
+        let decryptStr = AesUtil.aesDecrypt(key, iv, encryptStr);
+
+        LogUtil.loggerLine(Log.of("Demo", "test25", "encryptStr", encryptStr));
+        LogUtil.loggerLine(Log.of("Demo", "test25", "decryptStr", decryptStr));
+    }
+
+    private test27(): void {
+        let str = "Hello world";
+        let keyPair = RsaUtil.generateKey();
+
+        let encryptStr = RsaUtil.rsaEncrypt(keyPair.privateKey, str, "privateKey");
+        let decryptStr = RsaUtil.rsaDecrypt(keyPair.publicKey, encryptStr, "publicKey");
+
+        LogUtil.loggerLine(Log.of("Demo", "test27", "encryptStr", encryptStr));
+        LogUtil.loggerLine(Log.of("Demo", "test27", "decryptStr", decryptStr));
+
+        encryptStr = RsaUtil.rsaEncrypt(keyPair.publicKey, str, "publicKey");
+        decryptStr = RsaUtil.rsaDecrypt(keyPair.privateKey, encryptStr, "privateKey");
+
+        LogUtil.loggerLine(Log.of("Demo", "test27", "encryptStr", encryptStr));
+        LogUtil.loggerLine(Log.of("Demo", "test27", "decryptStr", decryptStr));
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test24().then();
+        demo.test27();
+        // demo.test26();
+        // demo.test25();
+        // demo.test24().then();
         // demo.test23();
         // demo.test22();
         // demo.test21();

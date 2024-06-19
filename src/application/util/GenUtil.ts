@@ -11,6 +11,37 @@ export class GenUtil {
     private constructor() {
     }
 
+    public static getRandomCode(num?: number): string {
+        num = num || 6;
+        let randomCode = "";
+        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGJKLMNPRSTUVWXYZ0123456789";
+        for (let i = 0; i < num; i++) {
+            let index = GenUtil.getRandom(0, chars.length);
+            randomCode += chars[index];
+        }
+        return randomCode;
+    }
+
+    public static getRandom(n: number, m: number): number {
+        return Math.floor(Math.random() * (m - n) + n);
+    }
+
+    public static stringToUint8Array(str: string): Uint8Array {
+        let arr = [];
+        for (let i = 0, j = str.length; i < j; ++i) {
+            arr.push(str.charCodeAt(i));
+        }
+        return new Uint8Array(arr);
+    }
+
+    public static uint8ArrayToString(fileData: Uint8Array): string {
+        let dataString = "";
+        for (let i = 0; i < fileData.length; i++) {
+            dataString += String.fromCharCode(fileData[i]);
+        }
+        return dataString;
+    }
+
     public static getDeCode(lstStr: Array<string> | string): Array<string> | string {
         if (typeof lstStr === "string") return this.getDeCodeStr(lstStr);
         let strs = new Array<string>();
