@@ -3,6 +3,7 @@ import {LogUtil} from "../../util/LogUtil";
 import {Log} from "../../pojo/dto/Log";
 import NodeRSA from "node-rsa";
 import CryptoJS from "crypto-js";
+import EncryptRsa from 'encrypt-rsa';
 
 export class EncodeAndDecode {
 
@@ -11,11 +12,12 @@ export class EncodeAndDecode {
 
     private apply(): void {
         // this.decode().then();
-        // this.decode1();
+        this.decode1();
         // this.decode2();
-        this.decode3();
+        // this.decode3();
         // this.decode4();
         // this.decode5();
+        this.decode6().then();
     }
 
     private decode2(): void {
@@ -83,6 +85,20 @@ export class EncodeAndDecode {
         // let publicKeyDecryptStr = encryptTool.decrypt(privateKeyEncryptStr);
 
         LogUtil.logger(Log.of("EncodeAndDecode", "decode", "publicKeyDecryptStr", publicKeyDecryptStr));
+    }
+
+    private async decode6(): Promise<void> {
+        let privateKeyEncryptStr = "JksyEIFGoemYCkdQhlJXkTchMeGLoKgkl+agMrTOOaE1uVfngBKIYH91t7OMwN42lXy6SzmySP4eYQSc7DdGHgLhP7HT6qt8YFRZNZzL0PdB5unnCpnFo14x7KojitFs8OiCGMLjRY1R9GVgXydud5pmTEy3MeyB2TLSbz/DKpxT0AkQLZhT/biJbQAwUKxbYKim+oMaWY8jgG8ChsPydNsV1gz8Y/SuUbsxy08utFN9wkZD80xn5VEr19646ovLHPY+lem306YXJnwCZVpVqgn+W5oXfY1WY8k2VxUzIXavnJvYtjcMRz8PtvTJRxXjtpVw3Hzl1dXI1yxMk0KQuA==";
+        let publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArCS+Mc95KdU5XvsL5Z5sYo78CmRgZ2D65dMHaZw8KjaJtM2SXiswz3f6ykR+dgSRONQifQjfdLdiaAiczJqchRLb2y5FrlQJ/Rxe+Z3Jn74vuUiKn5XeMy4nqsdNaaLQavakfQBMYmAPcxZfnjNIyyfyMGIFmW+MMgs/bGXLO6UrwJvaaXC59x5+2I/5KL0TrL9kNWBh0Xfv61U64fg0cAqHZF2HzckmxSF8H3AEAheqbvzuqzkBW26dP+2x5MOKQmfbkf8VlX+lcqPdvIFZOYQQ+olHsGIUzduuk8Xt6UqfMwDo4PTnv9SVQQdFlZ/hLOtncTMLoeqPM8H2rJ3ihwIDAQAB";
+
+        publicKey = "-----BEGIN PUBLIC KEY-----\n" + publicKey + "\n-----END PUBLIC KEY-----"
+
+        const encryptRsa = new EncryptRsa();
+        let publicKeyDecryptStr = encryptRsa.decrypt({
+            text: privateKeyEncryptStr,
+            publicKey: publicKey
+        });
+        LogUtil.loggerLine(Log.of("EncodeAndDecode", "decode3", "publicKeyDecryptStr", publicKeyDecryptStr));
     }
 
     private decode3(): void {
