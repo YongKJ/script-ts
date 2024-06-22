@@ -15,6 +15,7 @@ import {ApiUtil} from "../../util/ApiUtil";
 import pako from "pako";
 import {AesUtil} from "../../util/AesUtil";
 import {RsaUtil} from "../../util/RsaUtil";
+import {RsaWebUtil} from "../../util/RsaWebUtil";
 
 export class Demo {
 
@@ -578,26 +579,69 @@ export class Demo {
         LogUtil.loggerLine(Log.of("Demo", "test25", "decryptStr", decryptStr));
     }
 
-    private test27(): void {
+    private async test27(): Promise<void> {
         let str = "Hello world";
         let keyPair = RsaUtil.generateKey();
+        LogUtil.loggerLine(Log.of("Demo", "test27", "keyPair", keyPair));
 
-        let encryptStr = RsaUtil.rsaEncrypt(keyPair.privateKey, str, "privateKey");
-        let decryptStr = RsaUtil.rsaDecrypt(keyPair.publicKey, encryptStr, "publicKey");
+        let encryptStr = RsaUtil.rsaEncrypt(keyPair.privateKey, str, "private");
+        let decryptStr = RsaUtil.rsaDecrypt(keyPair.publicKey, encryptStr, "public");
 
         LogUtil.loggerLine(Log.of("Demo", "test27", "encryptStr", encryptStr));
         LogUtil.loggerLine(Log.of("Demo", "test27", "decryptStr", decryptStr));
 
-        encryptStr = RsaUtil.rsaEncrypt(keyPair.publicKey, str, "publicKey");
-        decryptStr = RsaUtil.rsaDecrypt(keyPair.privateKey, encryptStr, "privateKey");
+        encryptStr = RsaUtil.rsaEncrypt(keyPair.publicKey, str, "public");
+        decryptStr = RsaUtil.rsaDecrypt(keyPair.privateKey, encryptStr, "private");
 
         LogUtil.loggerLine(Log.of("Demo", "test27", "encryptStr", encryptStr));
         LogUtil.loggerLine(Log.of("Demo", "test27", "decryptStr", decryptStr));
     }
 
+    private async test28(): Promise<void> {
+        let str = "Hello world";
+        // let keyPair = RsaUtil.generateKey();
+        // let keyPair = await RsaWebUtil.generateKey("OAEP");
+        let keyPair = await RsaWebUtil.generateKey("PSS");
+        // let keyPair = {
+        //     privateKey: "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCLVVzGq2MEmlyOe9x3k80bZEWMuZVU9VWJGO39p4sEKp1D56ThNBr/tFX6ruOBoymE3VVuGV7fDU+WMK7F4+/hIiAnBwral1UQm/T1vlHyQP+vEFbxvkjoPDNUv6pxEXO9G8JF53n+6HeF7E/A/kDwlCP678krVMidz/jrotar0vHp1LSevpl7J6aFHaMb6ttXlo/y9kC5+oEp1TrivnBdfgjxfUME/ZViATsm51HD+EWi3KCMJRICyInfCPrp7wPoaZeaFHmPic1sEXZFvPGp+rTygvWbJmFC6NoPWbT8RMcG4Dwx8y2xzoMNOrINgrxy6aRVPq4nCsSjC6EZjAiNAgMBAAECggEAFgGqgJprLjvvKHX5sU0/1Pa2YW6iXmPNWbT9SdXfiA3u/t2kVglzxjVGayyaNEx/70NCDfyl1lb03gTcZdcFeSp5p5BeL349aj0nqHSh3sBTYeQTx2TFgSCY/uay1d7qx9CNk5rm0tMGpblYM2Q0/4p2UFj1Dgn7EanaZ+U1QLf3Qhhm35SbS9b27gghANgoPG0lRKkXYqTems5WDOoVz9t4G+gfYVp9Vvk1FlhNgV54s7KgUDDc31acIX4no9P9+5g5tOWA0tSXJyrdautoAMAFAc3tcW9SgRJAcgXFr1sixIqqoWa9tzf1iJdesC+qa2kdNqH7FyiBFuOnOCbVhQKBgQD91zcRX2olhhmv9DJCmIJ3M99O59CM1LXWeNerraenX0gg/G1ZeqY40RwwTkFw2lsx34PZybPXifmxF1oV6ZU4OAMtFw3K7N8Ag3Zl6oOO+WqWjowTp+Gh0U98E9BtHYdJ8seI79pJgU8ghkfYTI95GbF3yD1lLNiCxcNd4oSNhwKBgQCMhMljoykmgrZkpd2stoZQlj1oUpbASvWkZIusKYktTptoG9YIUeGrhgYbgH5o/uIzfWvrK2Acw4+FgVBXVmCgWCBxKWR49XvvEcJZMnhngjCo2BUS/BQzWjvEz6G5HURS6yeI/VuqJQewRUmta53MoipVXV3WtmQ1qW0C8QleSwKBgQD8jwMVX+/GwfQQ41CWfhNg8tV+NpuDY6hAah97it5CY0TqvP03iBaWdUgsr8/grwEJUDBpoowzKe6rSmaxYqS7OM/ALy3j92WxpxtIL9sRiAuLHO02KVUPoagJ9dTsm/Kdmtb44lw3wlauL6yQAyzE+tFeMncTkVkiVA4b/WKRRQKBgCZGSQCtwZiuw/WYRFA2C1HKCoHu9Qb9o/kaNf039xhzL9tksaDkhL6Oq/0zu7rnqj9yK0IMN4q+LcqklXikm38xYezQ5IAaBZ7xzGk1WRyAlrZ23Q6lwO7X5i3OjHN6qFCZotQqhpxKp9R4mv/0ry+9ACDuZJAGcDc5perGMtIPAoGAf4Z0XFvNwexPj8DIRdcu+CeeQZRIW5eBt7x8uFw89XSQpoFahj4hjrcxHuBIQwdG78pWDI97s0HSORltB0ivr5OQUhm3c8pEChFdDJNOMa7aCfdqkt4Vp5sb4tHH8QsxVUuTqVonQujIb86iKA1qlzvz862WfB3i6vgRp+h1OfE=",
+        //     publicKey: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAi1VcxqtjBJpcjnvcd5PNG2RFjLmVVPVViRjt/aeLBCqdQ+ek4TQa/7RV+q7jgaMphN1Vbhle3w1PljCuxePv4SIgJwcK2pdVEJv09b5R8kD/rxBW8b5I6DwzVL+qcRFzvRvCRed5/uh3hexPwP5A8JQj+u/JK1TInc/466LWq9Lx6dS0nr6ZeyemhR2jG+rbV5aP8vZAufqBKdU64r5wXX4I8X1DBP2VYgE7JudRw/hFotygjCUSAsiJ3wj66e8D6GmXmhR5j4nNbBF2Rbzxqfq08oL1myZhQujaD1m0/ETHBuA8MfMtsc6DDTqyDYK8cumkVT6uJwrEowuhGYwIjQIDAQAB",
+        // };
+
+        LogUtil.loggerLine(Log.of("Demo", "test27", "keyPair", keyPair));
+
+        // let encryptStr = "fYjKWRmWGR3q/raRJ+u0tCC3Z0UPpk9Qpr9di/+coK5Wfdrdjs5aoSMw7E5yHF3AxNIC8ku8QUEl8ImKY+4GM/R78j/zZBWW/yvNtvtBZr/MOcDdm9MHGl1HTVda2HKqgSXQBb5IJqCPGTe9tPXKk6TGGRVhDlvd6SBiOSSTWyNOpJTyjkRp2aVFqXwRDCdDmxOEHgaGgnzdV1qeTolkp5cwgjULzQfKsyQYbZ7rvhRky/+mHmA9oKgZxYrh7G5Qs+c7ZewcDVGyXCktXtaBWMaPAbuUjmtBy80JUk5p0HUS0hnF5gW9PrH+izbbnSJuliVbP2Eh1eveLsroEDTxRg==";
+        let encryptStr = await RsaWebUtil.rsaEncrypt(keyPair.privateKey, str, "private", "PSS");
+        let decryptStr = await RsaWebUtil.rsaDecrypt(keyPair.publicKey, encryptStr, "public", "PSS", str);
+
+        LogUtil.loggerLine(Log.of("Demo", "test27", "encryptStr", encryptStr));
+        LogUtil.loggerLine(Log.of("Demo", "test27", "decryptStr", decryptStr));
+
+        // let encryptStr = await RsaWebUtil.rsaEncrypt(keyPair.publicKey, str, "public", "OAEP");
+        // let decryptStr = await RsaWebUtil.rsaDecrypt(keyPair.privateKey, encryptStr, "private", "OAEP");
+
+        // let encryptStr = await RsaWebUtil.rsaEncrypt(keyPair.publicKey, str, "public", "PSS");
+        // let decryptStr = await RsaWebUtil.rsaDecrypt(keyPair.privateKey, encryptStr, "private", "PSS");
+
+        // LogUtil.loggerLine(Log.of("Demo", "test27", "encryptStr", encryptStr));
+        // LogUtil.loggerLine(Log.of("Demo", "test27", "decryptStr", decryptStr));
+    }
+
+    private test29(): void {
+        let content = "Hello world";
+        let compressedStr = <string>GenUtil.getEnCode(content);
+        let decompressedStr = GenUtil.getDeCode(compressedStr);
+        let contentBase64 = Buffer.from(content).toString("base64");
+
+        LogUtil.loggerLine(Log.of("Demo", "test28", "contentBase64", contentBase64));
+        LogUtil.loggerLine(Log.of("Demo", "test28", "compressedStr", compressedStr));
+        LogUtil.loggerLine(Log.of("Demo", "test28", "decompressedStr", decompressedStr));
+    }
+
     public static run(): void {
         let demo = new Demo();
-        demo.test27();
+        demo.test29();
+        // demo.test28().then();
+        // demo.test27().then();
         // demo.test26();
         // demo.test25();
         // demo.test24().then();

@@ -4,16 +4,17 @@ import {returnCreateKeys} from "encrypt-rsa/build/utils/types";
 export class RsaUtil {
 
     private static rsa = new EncryptRsa();
+    private static readonly RSA_RANDOM_LENGTH = 2048;
 
     private constructor() {
     }
 
     public static generateKey(): returnCreateKeys {
-        return this.rsa.createPrivateAndPublicKeys(2048);
+        return this.rsa.createPrivateAndPublicKeys(this.RSA_RANDOM_LENGTH);
     }
 
-    public static rsaEncrypt(key: string, content: string, keyType: "publicKey" | "privateKey"): string {
-        if (keyType === "publicKey") {
+    public static rsaEncrypt(key: string, content: string, keyType: "public" | "private"): string {
+        if (keyType === "public") {
             return this.rsa.encryptStringWithRsaPublicKey({
                 text: content,
                 privateKey: this.getPublicKey(key)
@@ -26,8 +27,8 @@ export class RsaUtil {
         }
     }
 
-    public static rsaDecrypt(key: string, content: string, keyType: "publicKey" | "privateKey"): string {
-        if (keyType === "publicKey") {
+    public static rsaDecrypt(key: string, content: string, keyType: "public" | "private"): string {
+        if (keyType === "public") {
             return this.rsa.decrypt({
                 text: content,
                 publicKey: this.getPublicKey(key),

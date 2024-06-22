@@ -1,4 +1,5 @@
 import {GenUtil} from "./GenUtil";
+import CryptoJS from "crypto-js";
 import crypto from "crypto";
 
 export class AesUtil {
@@ -15,6 +16,10 @@ export class AesUtil {
     }
 
     public static aesEncrypt(key: string, iv: string, content: string): string {
+        if (GenUtil.isBrowser()) {
+            return this.aesEncryptByBrowser(key, iv, content);
+        }
+
         const keyData = Buffer.from(key, 'base64');
         const ivData = Buffer.from(iv, 'base64');
 
@@ -24,7 +29,24 @@ export class AesUtil {
         return encrypted;
     }
 
+    public static aesEncryptByBrowser(key: string, iv: string, content: string): string {
+        let encryptParams = CryptoJS.AES.encrypt(
+            content,
+            CryptoJS.enc.Base64.parse(key),
+            {
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7,
+                iv: CryptoJS.enc.Base64.parse(iv)
+            }
+        );
+        return encryptParams.ciphertext.toString(CryptoJS.enc.Base64);
+    }
+
     public static aesDecrypt(key: string, iv: string, content: string): string {
+        if (GenUtil.isBrowser()) {
+            return this.aesDecryptByBrowser(key, iv, content);
+        }
+
         const keyData = Buffer.from(key, 'base64');
         const ivData = Buffer.from(iv, 'base64');
 
@@ -34,4 +56,16 @@ export class AesUtil {
         return decrypted;
     }
 
+    public static aesDecryptByBrowser(key: string, iv: string, content: string): string {
+        let decryptParams = CryptoJS.AES.decrypt(
+            content,
+            CryptoJS.enc.Base64.parse(key),
+            {
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7,
+                iv: CryptoJS.enc.Base64.parse(iv)
+            }
+        );
+        return decryptParams.toString(CryptoJS.enc.Utf8);
+    }
 }

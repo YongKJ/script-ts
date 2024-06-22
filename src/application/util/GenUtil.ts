@@ -11,6 +11,30 @@ export class GenUtil {
     private constructor() {
     }
 
+    public static arrayBufferToBase64(buffer: ArrayBuffer): string {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
+
+    public static base64ToArrayBuffer(base64: string): ArrayBuffer {
+        const binaryString = window.atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    public static isBrowser(): boolean {
+        return typeof globalThis.window !== "undefined";
+    }
+
     public static getRandomCode(num?: number): string {
         num = num || 6;
         let randomCode = "";
