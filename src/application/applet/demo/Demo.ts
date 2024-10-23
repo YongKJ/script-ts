@@ -504,8 +504,13 @@ export class Demo {
     }
 
     private async test24(): Promise<void> {
-        let version = "1.36.0";
-        let folder = "C:\\Users\\Admin\\Desktop";
+        let version = "1.48.0";
+        // let folder = "C:\\Users\\Admin\\Desktop";
+        let folder = "E:\\Download\\yuque\\" + version;
+        if (!FileUtil.exist(folder)) {
+            FileUtil.mkdir(folder);
+        }
+
         let cssUrl = `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${version}/umd/doc.css`;
         let jsUrl = `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${version}/umd/doc.umd.js`;
 
@@ -639,12 +644,12 @@ export class Demo {
 
     public static run(): void {
         let demo = new Demo();
-        demo.test29();
+        // demo.test29();
         // demo.test28().then();
         // demo.test27().then();
         // demo.test26();
         // demo.test25();
-        // demo.test24().then();
+        demo.test24().then();
         // demo.test23();
         // demo.test22();
         // demo.test21();
