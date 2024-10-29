@@ -1,8 +1,8 @@
 import PathUtil from "path";
+import path from "path";
 import fs from "fs";
 import {LogUtil} from "./LogUtil";
 import {Log} from "../pojo/dto/Log";
-import path from "path";
 import {rimraf} from "rimraf";
 
 export class FileUtil {
@@ -135,9 +135,9 @@ export class FileUtil {
         this.modifyFile(path, regStr, () => value, isAll);
     }
 
-    public static modifyFile(path: string, regStr: string, valueFunc: (allStr?: string, matchStr?: string) => string, isAll?: boolean): void {
+    public static modifyFile(path: string, regStr: string, valueFunc: (allStr?: string, lstMatchStr?: Array<string>) => string, isAll?: boolean): void {
         let regex = isAll ? new RegExp(regStr, "g") : new RegExp(regStr);
-        let content = this.read(path).replace(regex, (allStr,  matchStr) => valueFunc(allStr, matchStr));
+        let content = this.read(path).replace(regex, (allStr,  lstMatchStr) => valueFunc(allStr, lstMatchStr));
         this.write(path, content);
     }
 
@@ -147,20 +147,20 @@ export class FileUtil {
 
     public static modify(path: string, regStr: string, valueFunc: (matchStr?: string) => string, isAll?: boolean): void {
         let content = this.read(path);
-        let contentArray = content.includes("\r\n") ?
-            content.split("\r\n") : content.split("\n");
+        let contentBreak = content.includes("\r\n") ? "\r\n" : "\n";
+        let contentArray = content.split(contentBreak);
         let regex = new RegExp(regStr);
-        for (let line of contentArray) {
+        for (let i = 0; i < contentArray.length; i++) {
+            let line = contentArray[i];
             if (!regex.test(line)) continue;
             let lstMatch = line.match(regex);
             if (lstMatch == null) continue;
-            let newLine = line.replace(lstMatch[1], valueFunc(lstMatch[1]));
-            content = content.replace(line, newLine);
+            contentArray[i] = line.replace(lstMatch[1], valueFunc(lstMatch[1]));
             if (typeof isAll === "undefined" || !isAll) {
                 break;
             }
         }
-        this.write(path, content);
+        this.write(path, contentArray.join(contentBreak));
     }
 
 }
