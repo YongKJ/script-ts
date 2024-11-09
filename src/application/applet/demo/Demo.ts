@@ -504,7 +504,7 @@ export class Demo {
     }
 
     private async test24(): Promise<void> {
-        let version = "1.48.0";
+        let version = "1.54.0";
         // let folder = "C:\\Users\\Admin\\Desktop";
         let folder = "E:\\Download\\yuque\\" + version;
         if (!FileUtil.exist(folder)) {
