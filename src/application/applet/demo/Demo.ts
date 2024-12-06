@@ -647,16 +647,34 @@ export class Demo {
         LogUtil.loggerLine(Log.of("Demo", "test28", "contentBase64", contentBase64));
         LogUtil.loggerLine(Log.of("Demo", "test28", "compressedStr", compressedStr));
         LogUtil.loggerLine(Log.of("Demo", "test28", "decompressedStr", decompressedStr));
+
+        // let str = "JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3SgWQBVCAlGkPfNFMAEzUPlgAOKRmgBSAZwBaGYVwC2ARQCejAHaEINNJNzBiJeWAEB5OgCEI%20cgBZKdGAEYA9jRiiAGlywAGALxA";
+        let str = "JoKwcghgRg4mAuBTGALANgVQF5oE4HUA1FAZQgFEB3SgWQBVCAlGkPfNFMAEzUPlgAOKRmgBSAZwBaGYVwC2ARQCejAHaEINNJNzBiJeWAEB5OgCEI+cgBZKdGAEYA9jRiiAGlywAGALxA";
+        let deStr = GenUtil.getDeCode(str);
+        LogUtil.loggerLine(Log.of("Demo", "test29", "deStr", deStr));
+
+        let path = "overlay/data/MyCodes/RichText/wangeditor/test.html";
+        let enStr = GenUtil.getEnCode(path);
+        LogUtil.loggerLine(Log.of("Demo", "test29", "enStr", enStr));
+
+
+    }
+
+    private test30(): void {
+        let regStr = "(<select\\s+class=\"ql-ui\".*>[\\s\\S]*?</select>)";
+        let path = "C:\\Users\\admin\\Downloads\\test (4).html";
+        FileUtil.modFile(path, regStr, "");
     }
 
     public static run(): void {
         let demo = new Demo();
-        // demo.test29();
+        // demo.test30();
+        demo.test29();
         // demo.test28().then();
         // demo.test27().then();
         // demo.test26();
         // demo.test25();
-        demo.test24().then();
+        // demo.test24().then();
         // demo.test23();
         // demo.test22();
         // demo.test21();
