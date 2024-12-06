@@ -1,21 +1,21 @@
-import {GenUtil} from "../../util/GenUtil";
-import {LogUtil} from "../../util/LogUtil";
-import {Log} from "../../pojo/dto/Log";
-import {FileUtil} from "../../util/FileUtil";
-import {createConnection, createLongLivedTokenAuth, subscribeEntities} from "home-assistant-js-websocket";
-import {MsgUtil} from "../../util/MsgUtil";
-import {v2 as webdav} from "webdav-server";
-import {ExcelUtil} from "../../util/ExcelUtil";
-import {Statistics} from "./pojo/dto/Statistics";
-import {EnumUtil} from "./util/EnumUtil";
-import {SnowflakeIdv1} from "simple-flakeid";
+import { GenUtil } from "../../util/GenUtil";
+import { LogUtil } from "../../util/LogUtil";
+import { Log } from "../../pojo/dto/Log";
+import { FileUtil } from "../../util/FileUtil";
+import { createConnection, createLongLivedTokenAuth, subscribeEntities } from "home-assistant-js-websocket";
+import { MsgUtil } from "../../util/MsgUtil";
+import { v2 as webdav } from "webdav-server";
+import { ExcelUtil } from "../../util/ExcelUtil";
+import { Statistics } from "./pojo/dto/Statistics";
+import { EnumUtil } from "./util/EnumUtil";
+import { SnowflakeIdv1 } from "simple-flakeid";
 import PathUtil from "path";
 import fs from "fs";
-import {ApiUtil} from "../../util/ApiUtil";
+import { ApiUtil } from "../../util/ApiUtil";
 import pako from "pako";
-import {AesUtil} from "../../util/AesUtil";
-import {RsaUtil} from "../../util/RsaUtil";
-import {RsaWebUtil} from "../../util/RsaWebUtil";
+import { AesUtil } from "../../util/AesUtil";
+import { RsaUtil } from "../../util/RsaUtil";
+import { RsaWebUtil } from "../../util/RsaWebUtil";
 
 export class Demo {
 
@@ -130,11 +130,11 @@ export class Demo {
         let replaceTwo = url.replace(/\//g, "\\");
         let replaceThree = url.replace(/\//g, "\/");
         let replaceFour = url.replace(/\//g, "\\");
-        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceOne", GenUtil.recToStr({url: replaceOne})));
-        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceTwo", GenUtil.recToStr({url: replaceTwo})));
-        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceThree", GenUtil.recToStr({url: replaceThree})));
-        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceFour", GenUtil.recToStr({url: replaceFour})));
-        LogUtil.loggerLine(Log.of("Demo", "test9", "str", GenUtil.recToStr({str: "http:\\/\\/alpine.yongkj.cn\/dataGenerate\/subscribe?type="})));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceOne", GenUtil.recToStr({ url: replaceOne })));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceTwo", GenUtil.recToStr({ url: replaceTwo })));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceThree", GenUtil.recToStr({ url: replaceThree })));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "replaceFour", GenUtil.recToStr({ url: replaceFour })));
+        LogUtil.loggerLine(Log.of("Demo", "test9", "str", GenUtil.recToStr({ str: "http:\\/\\/alpine.yongkj.cn\/dataGenerate\/subscribe?type=" })));
     }
 
     private test10(): void {
@@ -228,7 +228,7 @@ export class Demo {
             "YOUR ACCESS TOKEN",
         );
 
-        const connection = await createConnection({auth});
+        const connection = await createConnection({ auth });
         subscribeEntities(connection, (entities) => console.log(entities));
     }
 
@@ -334,7 +334,7 @@ export class Demo {
                     mapData.set(fields[0], new Array<Record<string, any>>());
                 }
                 if (mapData.get(fields[0])?.length === index) {
-                    mapData.get(fields[0])?.push({index: index});
+                    mapData.get(fields[0])?.push({ index: index });
                 }
 
                 let objKey = "value";
@@ -429,7 +429,7 @@ export class Demo {
                 }
                 if (mapData.get(mapKey)?.length === index) {
                     let statistics = new Statistics();
-                    let genId = new SnowflakeIdv1({workerId: 1});
+                    let genId = new SnowflakeIdv1({ workerId: 1 });
 
                     statistics.xData = index;
                     statistics.workerId = workerId;
@@ -499,26 +499,33 @@ export class Demo {
         FileUtil.modifyFile(fileName, regStr, (allStr, matchStr) => {
             LogUtil.loggerLine(Log.of("Demo", "test23", "allStr", allStr));
             LogUtil.loggerLine(Log.of("Demo", "test23", "matchStr", matchStr));
-            return <string>allStr?.replace(<string>matchStr, "visual");
+            return <string>allStr?.replace(<any>matchStr, "visual");
         });
     }
 
     private async test24(): Promise<void> {
-        let version = "1.54.0";
-        // let folder = "C:\\Users\\Admin\\Desktop";
-        let folder = "E:\\Download\\yuque\\" + version;
-        if (!FileUtil.exist(folder)) {
-            FileUtil.mkdir(folder);
+        let num = 57;
+        for (let i = 57; ; i++) {
+            let version = "1." + i + ".0";
+            // let folder = "C:\\Users\\Admin\\Desktop";
+            let folder = "E:\\Download\\yuque\\" + version;
+            if (!FileUtil.exist(folder)) {
+                FileUtil.mkdir(folder);
+            }
+
+            let cssUrl = `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${version}/umd/doc.css`;
+            let jsUrl = `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${version}/umd/doc.umd.js`;
+
+            try {
+                let cssFileName = await this.offline(cssUrl, folder);
+                let jsFileName = await this.offline(jsUrl, folder);
+
+                LogUtil.loggerLine(Log.of("Demo", "test24", "cssFileName", cssFileName));
+                LogUtil.loggerLine(Log.of("Demo", "test24", "jsFileName", jsFileName));
+            } catch (e: any) {
+                break;
+            }
         }
-
-        let cssUrl = `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${version}/umd/doc.css`;
-        let jsUrl = `https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/${version}/umd/doc.umd.js`;
-
-        let cssFileName = await this.offline(cssUrl, folder);
-        let jsFileName = await this.offline(jsUrl, folder);
-
-        LogUtil.loggerLine(Log.of("Demo", "test24", "cssFileName", cssFileName));
-        LogUtil.loggerLine(Log.of("Demo", "test24", "jsFileName", jsFileName));
     }
 
     private async offline(url: string, path: string): Promise<string> {
