@@ -504,8 +504,7 @@ export class Demo {
     }
 
     private async test24(): Promise<void> {
-        let num = 57;
-        for (let i = 57; ; i++) {
+        for (let i = 64; ; i++) {
             let version = "1." + i + ".0";
             // let folder = "C:\\Users\\Admin\\Desktop";
             let folder = "E:\\Download\\yuque\\" + version;
@@ -669,12 +668,12 @@ export class Demo {
     public static run(): void {
         let demo = new Demo();
         // demo.test30();
-        demo.test29();
+        // demo.test29();
         // demo.test28().then();
         // demo.test27().then();
         // demo.test26();
         // demo.test25();
-        // demo.test24().then();
+        demo.test24().then();
         // demo.test23();
         // demo.test22();
         // demo.test21();
