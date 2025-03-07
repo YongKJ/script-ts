@@ -504,7 +504,7 @@ export class Demo {
     }
 
     private async test24(): Promise<void> {
-        for (let i = 64; ; i++) {
+        for (let i = 68; ; i++) {
             let version = "1." + i + ".0";
             // let folder = "C:\\Users\\Admin\\Desktop";
             let folder = "E:\\Download\\yuque\\" + version;
@@ -665,15 +665,39 @@ export class Demo {
         FileUtil.modFile(path, regStr, "");
     }
 
+    private test31(): void {
+        let path = "C:\\Users\\Admin\\Desktop\\日常文件\\转义前.txt";
+        let content = FileUtil.read(path).trim();
+
+        let tempContent = this.decodeUnicode(content);
+        FileUtil.write("C:\\Users\\Admin\\Desktop\\日常文件\\转义后1.txt", tempContent);
+    }
+
+    private decodeUnicode(str: string): string {
+        str = str.trim()
+            .substring(1, str.length - 1)
+            .replaceAll("\\\\", "\\");
+
+
+        str = str.replace(/\\/g, "%");
+        str = unescape(str);
+
+        str = str.replace(/\\/g, "%");
+        str = unescape(str);
+
+        return str;
+    }
+
     public static run(): void {
         let demo = new Demo();
+        demo.test31();
         // demo.test30();
         // demo.test29();
         // demo.test28().then();
         // demo.test27().then();
         // demo.test26();
         // demo.test25();
-        demo.test24().then();
+        // demo.test24().then();
         // demo.test23();
         // demo.test22();
         // demo.test21();
