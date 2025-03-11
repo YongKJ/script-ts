@@ -666,11 +666,11 @@ export class Demo {
     }
 
     private test31(): void {
-        let path = "C:\\Users\\Admin\\Desktop\\日常文件\\转义前.txt";
+        let path = "C:\\Users\\Admin\\Desktop\\转义前.txt";
         let content = FileUtil.read(path).trim();
 
         let tempContent = this.decodeUnicode(content);
-        FileUtil.write("C:\\Users\\Admin\\Desktop\\日常文件\\转义后1.txt", tempContent);
+        FileUtil.write("C:\\Users\\Admin\\Desktop\\转义后.txt", tempContent);
     }
 
     private decodeUnicode(str: string): string {
