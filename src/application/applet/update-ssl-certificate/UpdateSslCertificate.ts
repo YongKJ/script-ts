@@ -65,8 +65,8 @@ export class UpdateSslCertificate {
         await client.on("ready", () => {
             client.shell((err, stream) => {
                 if (err) throw err;
-                stream.on('close', () => {
-                    client.end();
+                stream.on('close', async () => {
+                    await client.end();
                 });
                 stream.end("kill -9 `ps -aux|grep nginx|grep -v grep|grep -v yongkj|awk '{print $2}'`\nnginx\nexit\n");
             });

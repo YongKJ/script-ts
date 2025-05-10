@@ -65,12 +65,12 @@ export class SendSslCertificate {
                 stream.on('close', async () => {
                     console.log("--------------------------------------------------------------------------------------------------------------");
                     LogUtil.loggerLine(Log.of("SendSslCertificate", "restart", "msg", "done"));
-                    client.end();
+                    await client.end();
                 }).on('data', (data: Buffer) => {
                     console.log(data.toString("utf-8"));
-                }).stderr.on('data', err => {
+                }).stderr.on('data', async err => {
                     LogUtil.loggerLine(Log.of("SendSslCertificate", "restart", "err", err));
-                    client.end();
+                    await client.end();
                 });
                 stream.end(
                     "rc-service nginx restart\n" +

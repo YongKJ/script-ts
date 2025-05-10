@@ -16,6 +16,7 @@ import pako from "pako";
 import { AesUtil } from "../../util/AesUtil";
 import { RsaUtil } from "../../util/RsaUtil";
 import { RsaWebUtil } from "../../util/RsaWebUtil";
+import * as ssh2 from "ssh2";
 
 export class Demo {
 
@@ -688,8 +689,33 @@ export class Demo {
         return str;
     }
 
+    private async test32(): Promise<void> {
+        let client = new ssh2.Client();
+        await client.on("ready", () => {
+            client.shell((err, stream) => {
+                if (err) throw err;
+                stream.on('close', async () => {
+                    await client.end();
+                }).on('data', (data: Buffer) => {
+                    console.log(data.toString("utf-8"));
+                }).stderr.on('data', async err => {
+                    LogUtil.loggerLine(Log.of("Demo", "test32", "err", err));
+                    await client.end();
+                });
+                // stream.end("kill -9 `ps -aux|grep nginx|grep -v grep|grep -v yongkj|awk '{print $2}'`\nnginx\nexit\n");
+                stream.end("whoami\npwd\nexit\n");
+            });
+        }).connect({
+            host: "",
+            port: 0,
+            username: "",
+            password: ""
+        });
+    }
+
     public static run(): void {
         let demo = new Demo();
+        demo.test32().then();
         // demo.test31();
         // demo.test30();
         // demo.test29();
@@ -697,7 +723,7 @@ export class Demo {
         // demo.test27().then();
         // demo.test26();
         // demo.test25();
-        demo.test24().then();
+        // demo.test24().then();
         // demo.test23();
         // demo.test22();
         // demo.test21();
