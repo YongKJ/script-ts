@@ -505,7 +505,7 @@ export class Demo {
     }
 
     private async test24(): Promise<void> {
-        for (let i = 74; ; i++) {
+        for (let i = 77; ; i++) {
             let version = "1." + i + ".0";
             // let folder = "C:\\Users\\Admin\\Desktop";
             let folder = "E:\\Download\\yuque\\" + version;
@@ -706,16 +706,16 @@ export class Demo {
                 stream.end("whoami\npwd\nexit\n");
             });
         }).connect({
-            host: "",
-            port: 0,
-            username: "",
-            password: ""
+            host: "47.107.122.89",
+            port: 27532,
+            username: "root",
+            password: "#Dxj1003746818"
         });
     }
 
     public static run(): void {
         let demo = new Demo();
-        demo.test32().then();
+        // demo.test32().then();
         // demo.test31();
         // demo.test30();
         // demo.test29();
@@ -723,7 +723,7 @@ export class Demo {
         // demo.test27().then();
         // demo.test26();
         // demo.test25();
-        // demo.test24().then();
+        demo.test24().then();
         // demo.test23();
         // demo.test22();
         // demo.test21();
