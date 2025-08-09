@@ -505,7 +505,7 @@ export class Demo {
     }
 
     private async test24(): Promise<void> {
-        for (let i = 77; ; i++) {
+        for (let i = 80; ; i++) {
             let version = "1." + i + ".0";
             // let folder = "C:\\Users\\Admin\\Desktop";
             let folder = "E:\\Download\\yuque\\" + version;
